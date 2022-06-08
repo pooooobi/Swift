@@ -48,3 +48,36 @@ Character : 문자(글자 한개)
 - ex) var str1 = "123" ➞ var number1 = Int(str1)
 타입 변환에 실패했을 경우 `nil`메세지가 나온다.
 데이터가 변환되지 않거나, 유실될 수 있으니 주의해야 한다.
+
+## 타입 애일리어스(Type Ailas)
+`typealias type name = type expression` 의 형식으로 사용한다.
+- ex) typealias Name = String ➞ var name: Name = "길동"
+- 위 내용에서 Name 타입이 의미하는 것은 String 이다.
+- 타입 애일리어스는 길게 쓸 때 유용하다.
+- ex) typealias Something = (Int) -> String
+- ex2) func someFunction(completionHandler: (Int) -> String) { } ➞ func someFunction(completionHandler: Something) { }
+따라서, 기존에 선언되어 있는 타입과 내가 만든 타입 등에서 새로운 별명, 별칭을 붙여 가독성을 향상시킬 수 있다.
+
+## 경고와 오류
+⚠️(노란색) 표시는 코드가 잘못된 것이 아닌, 더 나은 방법을 제안하기 위해 나타난다.
+- ex) var로 선언한 것이 바뀌지 않아 let으로 제안하기 위해 등...
+⚠️(빨간색) 표시는 코드가 잘못되어 반드시 수정해야 하는 내용을 제시하기 위해 나타난다.
+- 컴파일러가 추정하여 왜 오류가 나타나는지 표시된다.
+
+## 용어 정리(스위프트 이외에도 사용되는 프로그래밍 기본 용어)
+키워드(Keyword) : 약속어, 프로그래밍 언어에서 의미있는 단어여서 사용하기로 약속한 단어(다른 용도로 사용 불가능)
+- ex) var, let, if, true, ..., etc
+⭐️ 리터럴(Literals) : 코드에서 고정된 값으로 표현되는 문자(데이터) 그 자체
+- ex) var a = 4 // Int(정수) 리터럴
+- ex2) var name = "길동" // String(문자열) 리터럴
+- ex3) var b = 3.14 // Double(실수) 리터럴
+식별자(Identifer) : 변수, 상수, 함수, 사용자 정의 타입의 이름
+토큰(Token) : 코드에서 더이상 쪼갤 수 없는 최소의 단위(식별자, 키워드, 구두점, 연산자, 리터럴)
+- ex) let, ',', ==, ..., etc
+⭐️ 표현식(Expression) : 값, 변수, 연산자의 조합으로 하나의 결과값으로 평가되는 코드 단위
+- 즉, 하나의 값이 나오는 코드를 뜻한다.
+- ex) var num1 = 5 // 문장, num1이 5라고 인식(할당)
+- ex2) n < 5 // false ➞ 표현식
+⭐️ 문장(Statement) : 특정 작업을 실행하는 코드 단위
+- ex) var num1 = 5 // 문장
+- ex2) print(num1) // num1을 출력하라는 문장
