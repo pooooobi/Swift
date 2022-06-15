@@ -31,3 +31,12 @@ a + b 에서, `a`와 `b`는 `피연산자(Operand)`라 하며, `+`는 `연산자
         true && true, true && false, ..., etc. (Logical AND operator)
         true || true, true || false, ..., etc. (Logical OR opreator)
 
+## 피연산자의 갯수에 따른 연산자의 구분
+    1. 단항연산자 : 단일 대상의 바로 앞 또는 바로 뒤에 위치하는 연산자
+        -a, !a, a 등
+    2. 이항연산자 : 두개의 대상의 가운데에 위치하여 검사 및 계산하는 연산자
+        a + b, a - b, a >= b 등
+    3. 삼항연산자 : 세개의 대상을 조합하여 특수한 계산을 하는 연산자
+        a ? b : c 와 같은 것.
+
+
