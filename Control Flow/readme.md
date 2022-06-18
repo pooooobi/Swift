@@ -39,6 +39,54 @@ switch 변수 {
 
 if 보다 가독성이 좋아, 실제 앱 등의 분기처리에 많이 사용된다.
 
+## 스위치(Switch)의 활용
+- Value Binding : 다른 새로운 변수/상수 식별자로 할당한다는 뜻이다.<br>
+즉, 새로운 변수로 할당한다는 뜻이다.
+```swift
+var num = 6
+
+switch num {
+    case let a: // let a = num
+        print("숫자: \(a)")
+    default:
+        break
+}
+```
+- where(스위치문에서 조건을 확인하는 방식)<br>
+다른 상수 값에 바인딩(값을 넣음)한 후, 조건절(참/거짓)을 통해 다시 조건을 확인함.<br>
+바인딩 된 상수는 `케이스 블럭 내부에서만` 사용가능하고, 상수 바인딩은 주로 where 절하고 같이 사용된다.
+```swift
+var num = 7
+
+// 예시 1
+switch num {
+    case let x where x % 2 == 0:
+        print("짝수 숫자: \(x)")
+    case let x where x % 2 != 0:
+        print("홀수 숫자: \(x)")
+    default:
+        break
+}
+
+// 예시 2
+switch num {
+    case let n where n <= 7:
+        print("7 이하의 숫자: \(n)")
+    default:
+        print("그 이외의 숫자")
+}
+
+// 예시 3
+switch num {
+    case var x where x > 5: // 변수로 바인딩도 가능하다. var x = num
+        x = 7
+        print(x)
+    default:
+        print(num)
+}
+```
+
 ## 패턴 매칭 연산자
 `시작 숫자...끝 숫자 ~= 변수명`으로 사용하며,<br>
- 시작 숫자 ~ 끝 숫자가 변수값 안에 포함된다면 `true`, 그렇지 않다면 `false`가 반환된다.
+ 시작 숫자 ~ 끝 숫자가 변수값 안에 포함된다면 `true`, 그렇지 않다면 `false`가 반환된다.<br>
+ 이외에도 ..<0 (-를 의미함.), 1...(1 이상) 등이 있다.
