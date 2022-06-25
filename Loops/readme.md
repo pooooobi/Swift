@@ -101,3 +101,55 @@ for i in range2 {
 }
 ```
 `through`는 해당 숫자 까지를 뜻한다.
+
+## while문
+`while 조건 { }` 의 형태로 사용한다.<br>
+조건은 상황에 맞게 변화되어야 하며, `무한 반복`되지 않도록 유의해야 한다.
+```swift
+var sum = 0
+var num = 1
+
+while num <= 50 {
+    sum += num
+    num += 1
+}
+
+print("총 합의 출력: ", sum)
+```
+
+## repeat-while문
+`repeat { } while 조건`의 형태로 사용되며, 한번 실행 후 조건을 판단하여 실행한다.<br>
+루프를 통과하는 각 패스의 끝 부분에서 조건을 평가한다.<br>
+다른 언어에서는 do-while문으로 부른다.
+```swift
+var i = 1
+
+repeat {
+    print("\(3) * \(i) = \(3*i)")
+    i += 1
+} while i <= 9
+```
+
+## while? repeat-while?
+둘의 가장 큰 차이점은 코드를 실행하고 조건을 비교하느냐, 혹은 조건부터 비교하고 코드를 실행하느냐의 차이다.<br>
+`while`은 조건부터 확인하고 내부 코드를 실행하는 반면, `repeat-while`은 코드부터 실행하고 조건을 비교한다.
+```swift
+var number = 5
+var sumOfNum = 0
+
+while number < 5 {
+    sumOfNum += number
+    number += 1
+}
+
+number // 5
+sumOfNum // 0
+
+repeat {
+    sumOfNum += number
+    number += 1
+} while number < 5
+
+number // 6
+sumOfNum // 5
+```
