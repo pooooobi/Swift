@@ -8,7 +8,7 @@
 2. 코드를 논리적 단위로 구분할 수 있다.
 3. 코드 길이가 긴 것을 단순화하여 사용할 수 있다.
 4. 미리 함수를 만들어 놓으면, 개발자는 사용만 하면 된다.
-   * Spring 에서 Service를 만들어놓고 Controller에서 사용하고 결과값을 리턴하는 느낌이라 생각하면 편하다.
+   * Spring 에서 Service를 만들어 내부 함수를 만들고 Controller에서 Service의 함수를 사용하고 결과값을 리턴하는 느낌이라 생각하면 편하다.
 ```
 
 ## 함수의 형태
@@ -134,3 +134,45 @@ numFunction(num1: 3, num2: 7)
 아규먼트 값이 필요없는 경우도 있다.<br>
 실제 애플이 미리 만든 함수에는 기본값이 거의 들어가있는 경우가 많다.<br>
 ex) `print(items: Any..., separator: String, terminator: String)`
+
+## 함수 사용시 주의점
+함수 파라미터에 대한 정확한 이해가 필요하다.
+```swift
+func oneAddFunction(a: Int) -> Int {
+    a = a + 1
+    // 여기서 a는 let a: Int로 이미 선언되어 있는 것임
+    return a
+}
+```
+함수 내에서 선언한 변수의 범위(Scope)는 함수의 바디로 제한된다.
+```swift
+func sumFunction(a: Int, b: Int) -> Int {
+    return a + b
+}
+
+// a
+// b
+
+// 위 변수는 사용 불가하다
+```
+return 키워드에 대한 정확한 이해가 필요하다.<br>
+    * 리턴 타입이 있는 함수의 경우 : 리턴 키워드 다음의 표현식을 평가한 후 그 결과를 리턴하면서 함수를 벗어남.<br>
+    * 리턴 타입이 없는 함수의 경우 : 함수의 실행을 중지하고 함수를 벗어남.
+```swift
+// 리턴 타입이 있는 경우
+func checkNumber(_ num: Int) -> Int {
+    if num >= 5 {
+        return num // 반환될 경우 함수 사용 종료.
+    }
+    return 0
+}
+
+// 리턴 타입이 없는 경우
+func numberPrint(_ num: Int) {
+    if num >= 5 {
+        print("숫자가 5 이상입니다.")
+        return // return을 요구하지는 않지만, 쓸 경우 중지됨.
+    }
+    print("숫자가 5 이하입니다.")
+}
+```
