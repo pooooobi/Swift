@@ -1,6 +1,6 @@
 # 함수(Function)
 어떤 기능을 하는 코드 모음이며, 입력과 출력이 있을 수 있다.<br>
-`func [functionName]([Arguments]){ }`의 형태로 사용한다.
+`func [functionName]([Parameters]){ }`의 형태로 사용한다.
 
 ## 함수는 왜 사용할까 ?
 ```text
@@ -12,13 +12,13 @@
 ```
 
 ## 함수의 형태
-함수에 인수(Arguments)가 있는 경우는 아래와 같다.
+함수에 파라미터가 있는 경우는 아래와 같다.
 ```swift
 func sayByName(name: String) {
     print("안녕하세요. \(name)님")
 }
 
-sayByName(name: "Steve")
+sayByName(name: "Steve") // "Steve" -> Arguments
 // OUT: 안녕하세요. Steve님
 
 var name = "Tom"
