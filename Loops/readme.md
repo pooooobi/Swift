@@ -153,3 +153,42 @@ repeat {
 number // 6
 sumOfNum // 5
 ```
+
+## 제어전송문(Control Transfer Statement)
+제어전송문에는 `continue`, `break`가 있다.
+```swift
+// contiune
+for num in 1...20 {
+    if num % 2 == 0 {
+        continue // 1, 3, 5, ..., 19 까지 출력됨.
+    }
+    print(num)
+}
+
+// break
+for num in 1...20 {
+    if num % 2 == 0 {
+        break
+    }
+    print(num) // 1만 출력되고 break로 종료됨.
+}
+```
+`continue`는 가장 인접한 반복문으로 돌아가기 때문에, 잘 살펴볼 필요가 있다.<br>
+코드의 라인수가 많을 때, 잘 확인해야 한다 !!
+
+## 레이블이 새겨진 문장(Labeled Statements)
+레이블이 새겨진 문장에 continue, break를 사용할 수 있다.
+```swift
+// 실행해보면 이해가 쉽다.
+OUTER: for i in 0...3 {
+    print("OUTER \(i)")
+    INNER: for j in 0...3 {
+        if i > 1 {
+            print("   j :", j)
+            continue OUTER
+            // break OUTER
+        }
+        print("   INNER \(j)")
+    }
+}
+```
