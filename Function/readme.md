@@ -176,3 +176,97 @@ func numberPrint(_ num: Int) {
     print("숫자가 5 이하입니다.")
 }
 ```
+
+## 함수 표기법(지칭) 및 타입의 표기
+```swift
+// 예시 1
+func doSomething() {
+    print("출력")
+}
+
+doSomething
+
+// 예시 2
+func numberPrint(n num: Int) {
+    if num >= 5 {
+        print("숫자가 5 이상입니다")
+        return
+    }
+    print("숫자가 5 이하입니다.")
+}
+
+numberPrint(n: )
+
+// 예시 3
+func chooseStepFunction(backward: Bool, value: Int) -> Int {
+    func stepForward(input: Int) -> Int {
+        return input + 1
+    }
+
+    func stepBackward(input: Int) -> Int {
+        return input - 1
+    }
+
+    if backward {
+        return stepBackward(input: value)
+    } else {
+        return stepForward(input: value)
+    }
+}
+
+chooseStepFunction(backward:value:)
+
+// 예시 4
+func addPrintFunction(_ firstNum: Int, _ secondNum: Int) {
+    print(firstNum + secondNum)
+}
+
+addPrintFunction(_:_:)
+```
+함수의 표기
+1. 파라미터가 없는 경우 -> ()를 삭제한다.
+    - ex) `doSomething`
+2. 아규먼트 레이블이 있는 경우, 아규먼트 레이블까지 함수 이름으로 본다.
+    - ex) `numberPrint(n: )` -> numberPrint n 함수
+3. 파라미터가 여러개인 경우, 콤마 없이 아규먼트 이름과 콜론을 표기한다.
+    - ex) `chooseStepFunction(backward:value:)`
+4. 아규먼트 레이블이 생략된 경우(와일드 카드 사용)
+    - ex) `addPrintFunction(_:_:)`
+
+
+함수 타입의 표기
+1. 변수에 정수를 저장하는 경우 타입 표기
+    - ex) `var num: Int = 5`
+2. 함수 타입 표기
+    - ex) `var function1: (Int) -> () = numberPrint(n:)`
+    - ex2) `var function2: (Int, Int) -> () = addPrintFunction(_:_:)`
+
+## 함수의 오버로딩(overloading)
+같은 함수의 이름에 여러개의 함수를 대응 시키는 것을 뜻한다.
+```swift
+func doSomething(value: Int) {
+    print(value)
+}
+
+
+func doSomething(value: Double) {
+    print(value)
+}
+
+
+func doSomething(value: String) {
+    print(value)
+}
+
+
+func doSomething(_ value: String) {
+    print(value)
+}
+
+
+func doSomethging(value1: String, value2: Int) {
+    print(value1, value2)
+}
+```
+위 처럼 함수의 이름을 재사용 할 수 있다.<br>
+정말 모르겠다면, 자바에서 파라미터의 수에 따라 함수를 만들었던 기억을 참고하자.
