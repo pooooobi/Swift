@@ -276,3 +276,39 @@ func doSomethging(value1: String, value2: Int) {
 상위 스코프에서 선언된 변수와 상수에 접근 가능하나, 하위 스코프에서는 접근할 수 없다.<br>
 가장 인접한 스코프에 있는 변수와 상수에 먼저 접근한다.<br><br>
 쉽게 생각해서 { } 안에서만 있다고 보면 편하다. 물론 전역변수는 예외다.
+
+## 인아웃 파라미터(inout parameter)
+함수를 통해 변수를 직접 수정하고 싶은 경우는 어떻게 해야할까?<br>
+함수 내 파라미터는 기본적으로 값타입이고(복사되어 전달되는 방식) 임시상수이기 때문에 변경 불가능하다.
+```swift
+var num1 = 1
+var num2 = 2
+
+func swap(a: Int, b: Int) {
+    var temp = a
+    a = b
+    b = temp
+}
+
+// 오류 발생
+```
+하지만 함수 내에서 변수를 직접 수정하도록 하는 `inout` 키워드가 있다.<br>
+`inout` -> 선언시, & -> 사용(실행)시
+```swift
+var num1 = 1
+var num2 = 2
+
+func swapNumbers(a: inout Int, b: inout Int) {
+    var temp = a
+    a = b
+    b = temp
+}
+
+swapNumbers(a: &num1, b: &num2) // 사용하기 위해 앰퍼센트(&)를 꼭 사용해야 한다
+```
+입출력 파라미터는 내부적으로 copy-in, copy-out 메모리 모델을 사용하여 원본을 전달한다.<br>
+값을 복사해서 함수 바디(내부)로 전달하고, 종료될 때 Argument로 전달한 변수에 복사된다.<br><br>
+`inout` 파라미터를 사용하면서<br>
+1. 상수(let)나 리터럴 전달할 수 없음
+2. 파라미터의 기본값 선언을 허용하지 않음
+3. 가변파라미터(여러개의 파라미터)로 선언하는 것은 불가능함
