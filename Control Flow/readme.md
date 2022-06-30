@@ -116,4 +116,5 @@ func checkPassword2(password: String) -> Bool {
 }
 ```
 if 안에 if가 있다면 guard문을 더 늘려 미리 걸러내는 구조라고 생각하면 된다.<br>
-`guard`의 사전적 의미인 감시하다와 일치하는 내용이다.
+`guard`의 사전적 의미인 감시하다와 일치하는 내용이다.<br>
+`guard condition else { return }` 의 형태로 사용하면 된다.
