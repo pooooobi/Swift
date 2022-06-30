@@ -44,3 +44,36 @@ num1, num2를 이용해 addTwoNumbers 함수 실행 // 실행 함수의 스택�
 num3 프린트함
 ```
 메인함수에서 진행되다 addTwoNumbers -> main -> print -> stackFrame 영역 삭제 까지 진행된다.
+
+## startFunction 함수의 예제
+```swift
+var total: Int = 0 // 전역변수, 데이터 영역
+
+func square(_ i: Int) -> Int {
+    return i * i
+}
+
+func squareOfSum(_ x: Int, _ y: Int) -> Int {
+    var z = square(x + y)
+    return z
+}
+
+func startFunction() {
+    var a = 4
+    var b = 8
+    total = squareOfSum(a, b)
+}
+
+startFunction()
+```
+위와 같은 코드가 있고, 메모리 구조는 아래와 같다.
+```text
+total -> 데이터 영역
+main(), startFunction() -> 스택(StackFrame 영역)
+a, b의 변수가 StackFrame 내 startFunction 안에 존재
+
+squareOfSum이 스택 영역에 생성
+squareOfSum의 z 변수영역 생성 및 square 스택 영역 생성
+square 계산 후 스택 영역에서 사라짐
+squareOfSum에서 계산 후 startFunction에 리턴 후 사라짐
+```
