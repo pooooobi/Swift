@@ -90,3 +90,30 @@ switch num {
 `시작 숫자...끝 숫자 ~= 변수명`으로 사용하며,<br>
  시작 숫자 ~ 끝 숫자가 변수값 안에 포함된다면 `true`, 그렇지 않다면 `false`가 반환된다.<br>
  이외에도 ..<0 (-를 의미함.), 1...(1 이상) 등이 있다.
+
+ ## 가드문(guard)
+ if문을 사용할 때 조건이 여러개일 경우 지속적으로 들여써야 하는데, 코드의 가독성이 안좋아져 Swift에는 가드문이 존재한다.
+
+1. else문을 먼저 배치하여 조건을 판별해 조기 종료시킨다.(early exit)
+2. 조건을 만족하는 경우 코드가 다음줄로 넘어가서 계속 실행된다.
+3. 가드문에서 선언된 변수를 아래 문장에서 사용 가능하다.(동일 스코프로 취급, guard let 바인딩 관련)
+```swift
+// if문
+func checkPassword(password: String) -> Bool {
+    if password.count >= 6 {
+        // 로그인 처리 로직
+        return true
+    } else {
+        return false
+    }
+}
+
+// guard문, 가독성이 좋아진 것을 한눈에 볼 수 있음
+func checkPassword2(password: String) -> Bool {
+    guard password.count >= 6 else { return false }
+    // 로그인 처리 로직
+    return true
+}
+```
+if 안에 if가 있다면 guard문을 더 늘려 미리 걸러내는 구조라고 생각하면 된다.<br>
+`guard`의 사전적 의미인 감시하다와 일치하는 내용이다.
