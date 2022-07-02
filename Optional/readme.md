@@ -21,22 +21,73 @@ print(name) // 오류 발생
 7. 옵셔널 타입끼리 연산할 수 없다.
     - 당연히 계산도 불가능하다.
 
-## ? <추가예정>
+## 옵셔널의 사용
+```swift
+var num: Int?
+var str: String? = "테스트"
+
+print(num) // nil\n
+print(str) // Optional("테스트")
+```
+값이 없을수도 있는 경우를 포함하는 타입 -> Optional
+
+## 옵셔널의 추출
+1. 강제로 값을 추출하는 방법 : 값이 안에 확실하게 들어있을 경우 (Forced Unwrapping)
+    - 강제 추출연산자 `!`를 옵셔널 표현식 뒤에 붙이면 된다.
+    - 일반적으로는 사용하지 않는다.
+```swift
+// 옵셔널의 사용 코드에 이어서...
+
+// print(num!) -> 값이 들어있지 않으므로 오류 발생
+print(str!) // 테스트
+```
+2. if문으로 nil이 아닌것을 확인한 후 강제로 벗기기
+```swift
+if str != nil {
+    print(str!)
+}
+```
+3. 옵셔널 바인딩 : 바인딩될 경우 특정 작업을 실행하겠다는 뜻 (if let 바인딩)
+```swift
+if let s = str { // s 변수에 str이 담긴다면
+    print(s)
+}
+
+var optionalTest: String? = "테스트"
+
+if let testToOptional = optionalTest {
+    print(testToOptional)
+}
+
+// guard let 바인딩을 많이 사용한다.
+func doOptionalBinding(str: String?) {
+    guard let n = str else { return }
+    print(n)
+}
+```
+4. 닐 코얼레싱(Nil-Coalescing) 연산자를 사용하는 방법
+    - coalesce : 영어로(더 큰 덩어리로) 합치다.
+```swift
+var usernameInfo: String? = "가나다"
+
+var username = usernameInfo ?? "인가되지 않은 사용자" // usernameInfo에 값이 있다면 "가나다"가, 없다면 "인가되지 않은 사용자"가 들어온다.
+```
+위 코드를 살펴보면 직접 값을 벗겨 사용하진 않고, default value를 제시하여 nil일 때 들어갈 값을 제시함으로써 옵셔널을 제거하는 것이다.<br>
+위 코드에서 usernameInfo가 nil이면 값을 벗길 수 없으나 username에 `usernameInfo ?? "인가되지 않은 사용자"`처럼 default value를 제시하는 것이다.
 
 ## 자바의 Optional<> 과 비교
 Java Spring framework에서 아래와 같은 코드가 있다 가정하자. (불필요 내용 생략)
 ```java
 // UserRepository
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // 내용 생략
     Optional<User> findByEmail(String email);
 }
 
 // UserService
 @Service
 @Transactional
+@NoArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
