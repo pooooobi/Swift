@@ -75,6 +75,61 @@ var username = usernameInfo ?? "인가되지 않은 사용자" // usernameInfo�
 위 코드를 살펴보면 직접 값을 벗겨 사용하진 않고, default value를 제시하여 nil일 때 들어갈 값을 제시함으로써 옵셔널을 제거하는 것이다.<br>
 위 코드에서 usernameInfo가 nil이면 값을 벗길 수 없으나 username에 `usernameInfo ?? "인가되지 않은 사용자"`처럼 default value를 제시하는 것이다.
 
+## 옵셔널 바인딩 연습
+```swift
+// if let 바인딩 연습
+import UIKit
+
+var number: Int? = 7
+var noNumber: Int?
+var hello: String? = "안녕하세요"
+var name: String? = "홍길동"
+var noString: String?
+var newNum: Double? = 5.5
+var noDoubleNumber: Double?
+
+if let num = number {
+    print(num)
+}
+
+if let hi = hello {
+    print(hi)
+}
+
+if let realName = name {
+    print(realName)
+}
+
+if let num = newNum {
+    print(num)
+}
+
+// guard let 바인딩 연습
+func doGuardLetBinding(_ num: Int?) {
+    guard let number = num else { return }
+    print(number)
+}
+
+func doGuardLetBinding(_ str: String?) {
+    guard let string = str else { return }
+    print(string)
+}
+
+func doGuardLetBinding(_ num: Double?) {
+    guard let number = num else { return }
+    print(number)
+}
+
+doGuardLetBinding(number)
+doGuardLetBinding(noNumber)
+doGuardLetBinding(hello)
+doGuardLetBinding(name)
+doGuardLetBinding(noString)
+doGuardLetBinding(newNum)
+doGuardLetBinding(noDoubleNumber)
+```
+
+
 ## 자바의 Optional<> 과 비교
 Java Spring framework에서 아래와 같은 코드가 있다 가정하자. (불필요 내용 생략)
 ```java
