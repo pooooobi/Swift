@@ -255,6 +255,58 @@ words = ["A" : "A"]
 // 전체 초기화(빈 딕셔너리로 만들기)
 words = [:]
 ```
+딕셔너리의 삭제(제거)
+```swift
+dic = ["A" : "Apple", "B" : "Banana"]
+
+// 해당 요소 삭제
+dic["B"] = nil
+
+// 존재하지 않는 값을 삭제
+dic["E"] = nil // 오류 아님, 존재하지 않아 아무일이 일어나지 않음.
+
+// 함수로 삭제
+dic.removeValue(forKey: "A")
+
+// 전체 삭제
+dic.removeAll()
+dic.removeAll(keepingCapacity: true) // 저장공간 유지
+```
+딕셔너리의 비교 및 활용
+```swift
+let a = ["A" : "Apple", "B" : "Banana", "C" : "City"]
+let b = ["A" : "Apple", "C" : "City", "B" : "Banana"]
+
+// 딕셔너리엔 순서가 없으므로 ==에서는 true가 나옴
+a == b // true
+a != b // false
+
+// 딕셔너리의 중첩 사용(배열)
+var dictionary1 = [String: [String]]()
+
+dictionary1["arr1"] = ["A", "B", "C"]
+dictionary1["arr2"] = ["D", "E", "F"]
+
+var dictionary2 = [String: [String: Int]]()
+
+dictionary2["dic1"] = ["name" : "name1", "age" : 2]
+dictionary2["dic2"] = ["name" : "name2", "age" : 6]
+
+// 반복문을 통한 딕셔너리의 활용
+let dict = ["A" : "Apple", "B" : "Banana"]
+
+for (key, value) in dict {
+    print("\(key) : \(value)")
+}
+
+for (key, _) in dict {
+    print("key : \(key)")
+}
+
+for (_, value) in dict {
+    print("value : \(value)")
+}
+```
 
 ## 해쉬(Hash) 함수
 `Hash`, `HashValue`, `Hashable`, 어떤 타입이 Hashable 한가?<br>
