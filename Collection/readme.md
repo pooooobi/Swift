@@ -299,6 +299,11 @@ for (key, value) in dict {
     print("\(key) : \(value)")
 }
 
+for item in dict {
+    print("\(item.key) : \(item.value)")
+}
+
+// 와일드 카드 패턴 사용가능
 for (key, _) in dict {
     print("key : \(key)")
 }
@@ -323,7 +328,8 @@ Hash Table
 ... etc
 ```
 실제 저장되는건 해쉬 테이블의 형태다.<br>
-이와 마찬가지로, 딕셔너리(Dictionary) 또한 해쉬 테이블의 형태로 저장된다.
+이와 마찬가지로, 딕셔너리(Dictionary) 또한 해쉬 테이블의 형태로 저장된다.<br>
+따라서 순서가 없다.
 
 ## 집합(Set)
 _자주 사용하진 않음_<br>
