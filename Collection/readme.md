@@ -61,6 +61,58 @@ stringArray[stringArray.endIndex - 1]
 
 // ... 이하 생략
 ```
+배열의 삽입(Insert)
+```swift
+var alphabet = ["A", "B", "C"]
+
+alphabet.insert("D", alphabet.endIndex)
+alphabet.insert("a", 0)
+alphabet.insert(contentsOf: ["D", "E"], at: alphabet.endIndex)
+// insert(newElement: String, at: Int) 혹은 newElement -> contentsOf
+```
+배열의 교체(Replace)
+```swift
+alphabet = ["A", "B", "C", "D"]
+
+// 0번째 교체
+alphabet[0] = "a"
+
+// 0에서 2까지 교체
+alphabet[0...2] = ["x", "y", "z"]
+
+// 0에서 1까지 배열 비우기
+alphabet[0...1] = []
+
+// 혹은 교체하는 함수의 문법, 위 0에서 2까지 교체라는 내용과 똑같음. 내부에 들어가는 값만 다름.
+alphabet.replaceSubrange(0...2, with: ["a", "b", "c"])
+```
+배열의 추가(Append)
+```swift
+alphabet += ["H"]
+
+// 마지막에 추가하는 문법
+alphabet.append("H")
+alphabet.append(contentsOf: ["H", "I"])
+```
+배열의 삭제(Remove)
+```swift
+// sub-script 문법
+alphabet[0...2] = []
+
+// 요소 한개를 삭제
+alphabet.remove(at: 2)
+
+// 요소 범위 삭제
+alphabet.removeSubrange(0...2)
+
+// 처음 혹은 마지막 요소를 삭제
+alphabet.removeFirst() // 내부에 값이 없을 경우 defalut: 1이고 String 리턴
+alphabet.removeLast()
+
+// 배열의 모든 요소 삭제
+alphabet.removeAll() // 모두 삭제
+alphabet.removeAll(keepingCapacity: true) // 저장공간을 확보해 둔 채로 내부 데이터만 삭제
+```
 
 ## 딕셔너리(Dictionary)
 데이터를 키와 값, `key-value`의 형태로 하나의 쌍으로 관리하는 `순서없는 컬렉션`
