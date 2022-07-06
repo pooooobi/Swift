@@ -163,7 +163,115 @@ for (index, value) in nums.enumerated().reversed() { // 역순으로 뽑아내�
 ```
 
 ## 딕셔너리(Dictionary)
-데이터를 키와 값, `key-value`의 형태로 하나의 쌍으로 관리하는 `순서없는 컬렉션`
+데이터를 키와 값, `key-value`의 형태로 하나의 쌍으로 관리하는 `순서없는 컬렉션`<br>
+배열과 마찬가지로 각 요소(element)는 key-value의 형태로 키와 값의 쌍을 `:(콜론)` 처리 한다.<br>
+예시) let dic: Dictionary<String, String> = ["A" : "Apple", "B" : "Banana"]<br>
+예시2) let dic: [String: String]<br>
+딕셔너리의 키값은 Hashable 해야 검색 속도가 빠르다.
+```text
+문법적인 약속
+1. [] 대괄호로 묶는다.
+2. 키값은 유일해야 한다. 중복할 수 없다. 하지만 밸류값은 중복 가능하다.
+3. 1개의 딕셔너리에는 동일한 자료형 쌍의 데이터만 담을 수 있다.
+4. 키값은 Hashable 해야 한다.
+```
+딕셔너리 타입 표기(정식 문법)
+```swift
+let words: Dictionary<Int, String>
+```
+딕셔너리 타입 표기(단축 문법)
+```swift
+var words: [String: String] = [:]
+```
+빈 딕셔너리의 생성
+```swift
+let emptyDic1: Dictionary<Int, String> = [:]
+let emptyDic2 = Dictionary<Int, String>()
+let emptyDic3 = [Int: String]()
+
+// 선언 후 비우는 법
+var dictionaryEmpty = ["1" : 1, "2" : 2]
+dictionaryEmpty = [:]
+```
+딕셔너리의 기본 기능
+```swift
+dic = ["A" : "Apple", "B" : "Banana"]
+
+dic.count
+dic.isEmpty
+
+dic.randomElement() // return => Named Tuple(Optional)
+```
+딕셔너리의 각 요소에 대한 접근(키를 통해)
+```swift
+// 딕셔너리는 주로 서브스크립트를 이용한 문법을 주로 사용한다.
+dic = ["A" : "Apple", "B" : "Banana"]
+
+dic["A"] // Apple
+print(dic["A"]) // Optional("Apple"), 값이 없을 경우가 있어, 즉 nil의 가능성이 있어 옵셔널 처리됨
+
+// if let 바인딩
+if let a = dic["A"] {
+    print(a)
+} else {
+    print("Not found")
+}
+
+// 잘 사용하지 않음, default 설정
+dic["S", default: "Empty"]
+
+// key, value의 값을 확인, 정렬도 가능함.
+dic.keys
+dic.values
+
+dic.keys.sorted()
+dic.values.sorted()
+
+for key in dic.keys.sorted() {
+    print(key)
+}
+```
+1. 딕셔너리는 값만 따로 검색하는 방법을 제공하지 않는다.
+2. 서브 스크립트 문법으로 "키"를 전달해야 한다.
+
+딕셔너리의 업데이트 : 삽입, 교체, 추가
+```swift
+words = [:]
+
+// 삽입하기
+words["A"] = "Apple"
+words["B"] = "Banana"
+
+// 교체하기
+words["B"] = "Bob"
+
+// 정식 함수 문법 (update + insert)
+words.updateValue("Blue", forKey: "B")
+words.updateValue("Cocoa", forKey: "C") // 새로운 요소가 추가? -> nil 반환
+
+// 전체 교체
+words = ["A" : "A"]
+
+// 전체 초기화(빈 딕셔너리로 만들기)
+words = [:]
+```
+
+## 해쉬(Hash) 함수
+`Hash`, `HashValue`, `Hashable`, 어떤 타입이 Hashable 한가?<br>
+고정된 길이의 숫자 혹은 글자이면서 유일한 값(특정 입력값에 대해 항상 동일 결과가 나올 때, `hash value`라 함)
+```text
+Hash Table
+12300 : "steve"
+12398 : "cook"
+... etc
+
+배열(Array)
+0 : "steve"
+1 : "cook"
+... etc
+```
+실제 저장되는건 해쉬 테이블의 형태다.<br>
+이와 마찬가지로, 딕셔너리(Dictionary) 또한 해쉬 테이블의 형태로 저장된다.
 
 ## 집합(Set)
 _자주 사용하진 않음_<br>
