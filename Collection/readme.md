@@ -113,6 +113,54 @@ alphabet.removeLast()
 alphabet.removeAll() // 모두 삭제
 alphabet.removeAll(keepingCapacity: true) // 저장공간을 확보해 둔 채로 내부 데이터만 삭제
 ```
+배열의 기타 기능
+```swift
+var nums = [1, 2, 3, 6, 3, 1, 2, 5, 9, 8]
+// -ed가 붙는 함수는 실제 배열이 정렬되지 않고 결과값만 리턴시킴.
+
+// 배열을 직접정렬, sort
+nums.sort() // 배열 자체를 정렬시킴
+nums.sorted() // 배열을 정렬시켜 보여주나, 실제 정렬되지는 않음.
+
+// 배열 역순정렬, reverse
+nums.reverse()
+nums.reversed()
+
+// 새로운 배열을 생성하지 않고, 배열의 메모리를 공유하며 역순으로 열거할 수 있는 형식을 리턴시킴
+nums.sorted().reserved()
+
+// 배열을 랜덤으로 섞음
+nums.shuffle()
+nums.shuffled()
+```
+배열의 비교 및 활용
+```swift
+let a = ["A", "B", "C"]
+let b = ["a", "b", "c"]
+
+a == b // false
+a != b // true
+
+for i in a {
+    print(i) // A, B, C
+}
+
+// enumerate : 열거하다.
+// enumerated -> Named Tuple의 형태로 전달
+
+for tuple in nums.enumerated() {
+    print(tuple)
+    print("\(tuple.0) - \(tuple.1)")
+}
+
+for (index, word) in nums.enumerated() { // 바로 뽑아내기
+    print("\(index) - \(word)")
+}
+
+for (index, value) in nums.enumerated().reversed() { // 역순으로 뽑아내기
+    print("\(index) - \(value)")
+}
+```
 
 ## 딕셔너리(Dictionary)
 데이터를 키와 값, `key-value`의 형태로 하나의 쌍으로 관리하는 `순서없는 컬렉션`
