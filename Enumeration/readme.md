@@ -344,3 +344,41 @@ for case let number? in arr {
     print("Found \(number)")
 }
 ```
+
+## @unknown ?
+열거형의 케이스가 늘어난다면 항상 올바른 처리를 할까?
+```swift
+enum LoginProvider: String {
+    case email
+    case facebook
+    case naver
+    case google
+    case kakao
+}
+
+let userLogin = LoginProvider.email
+
+// ... switch문 생략
+
+// default 블럭을 추가하는 것 만으로 안전해 지는가?
+
+switch userLogin {
+    case .email:
+        print("이메일 로그인")
+    case .facebook:
+        print("페이스북 로그인")
+    case .naver:
+        print("네이버 로그인")
+    case .google:
+        print("구글 로그인")
+    case .kakao:
+        print("카카오 로그인")
+    @unknown default:
+        print("이외의 모든 것")
+}
+```
+@unknown Attribute를 활용하면 아래와 같다.
+```
+switch에서 모든 열거형을 다루지 않을 때 유용함.
+"Switch must be exhatsive"로 알려준다.
+```
