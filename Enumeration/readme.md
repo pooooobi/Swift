@@ -158,3 +158,123 @@ switch chip {
         print("\(a) GB HardDisk")
 }
 ```
+
+## 열거형을 통해 알아보는 옵셔널(Optional)
+Optional은 내부적으로 enum으로 둘러 쌓여있는데,
+```swift
+// Generic
+enum Optional<Wrapped> {
+    case some(Wrapped)
+    case none
+}
+```
+`.some`은 연관값을 의미하며 구체적인 정보를, `.none`은 값이 없음을 나타내고 nil을 나타낸다.<br>
+`.none == nil` 의 의미를 가지고, 명시적인 열거형으로 표현했으나 일반적으로는 nil 키워드를 사용함.
+
+## 열거형과 스위치문
+열거형에 대한 구체적인 처리는 스위치문과 함께 쓸 때 사용성이 높다.<br>
+OAuth 2.0 기반으로 되어있는 소셜 로그인을 예로 들어보자.
+```swift
+enum LoginProvider: String {
+    case email
+    case facebook
+    case naver
+    case google
+    case kakao
+}
+
+let userLogin = LoginProvider.facebook
+
+switch userLogin {
+    case .email:
+        print("이메일 로그인")
+    case .facebook:
+        print("페이스북 로그인")
+    case .naver:
+        print("네이버 로그인")
+    case .google:
+        print("구글 로그인")
+    case .kakao:
+        print("카카오 로그인")
+}
+```
+열거형은 스위치문으로 많이 활용되나 소수의 작은 사례만 스위치를 사용하지 않는다. 거의 스위치를 쓴다고 보면 된다 !<br>
+표현식에 대한 분기처리에 최적화 되어있다. `switch`문을 안 쓸 이유가 없다.
+
+## 옵셔널 열거형 (Enumeration Case Pattern)
+```swift
+enum SomeEnum {
+    case left
+    case right
+}
+
+let x: SomeEnum? = .left
+
+switch x {
+    case .some(let value):
+        switch value {
+            case .left:
+                print("LEFT")
+            case .right:
+                print("RIGHT")
+        }
+    case .none:
+        print("NONE")
+}
+```
+잘 살펴보면 SomeEnum의 `Optional`로 선언된 x가 switch 안에 담겨 `.some`과 `.none`으로 되어있는 것을 볼 수 있다.<br>
+위에서 열거형을 통해 알아보는 옵셔널 을 살펴보면 제너릭 선언에서 사용하는 형식임을 알 수 있다.
+
+## 열거형에 연관값이 있는 경우 (Enumeration Case Pattern)
+1. 연관값이 있는 열거형의 활용 : 열거형 case 패턴
+2. 구체적 정보를 변수에 바인딩 하는 패턴임.
+3. 열거형 case 패턴
+    - `case Enum.case(let 변수명)`
+    - `case let Enum.case(변수명)`
+4. 이외에도 switch, if, guard, for-in, while과 같은 반복문에서도 활용 가능하다.
+```swift
+enum Computer {
+    case cpu(core: Int, ghz: Double)
+    case ram(Int, String)
+    case hardDisk(gb: Int)
+}
+
+switch chip {
+    case Computer.hardDisk(gb: let gB):
+        print("\(gB) GB 하드 디스크")
+    default:
+        break
+}
+```
+위와 같이 사용한다면 hardDisk에 gb가 `let gB`가 되어 스위치문 안에서 자유롭게 나타낼 수 있게 된다.<br>
+만약 특정 케이스라면?
+```swift
+if case Computer.hardDisk(gb: let gB) = chip {
+    print("\(gB) GB 하드 디스크")
+}
+```
+만약 배열로 되어있다면?
+```swift
+let chiplists: [Computer] = [
+    .cpu(core: 4, ghz: 3.0),
+    .cpu(core: 8, ghz: 3.5),
+    .ram(16, "SRAM"),
+    .ram(32, "DRAM"),
+    .cpu(core: 8, ghz: 3.5),
+    .hardDisk(gb: 500),
+    .hardDisk(gb: 256)
+]
+
+for case let .cpu(core: c, ghz: h) in chiplists {
+    print("CPU 칩 : \(c) CORE, \(h) GHz")
+}
+```
+`case let .cpu(core: c, ghz: h)`의 의미는 .cpu만 뽑아 core는 c 변수로, ghz는 h 변수로 담는다는 의미다.<br>
+옵셔널일 경우에는...
+```swift
+let arrays: [Int?] = [nil, 2, 3, nil, 5]
+
+for case .some(let number) in arrays {
+    print("Found \(number)")
+}
+```
