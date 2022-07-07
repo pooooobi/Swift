@@ -334,3 +334,104 @@ Hash Table
 ## 집합(Set)
 _자주 사용하진 않음_<br>
 수학에서 집합과 비슷한 연산을 제공하는 `순서없는 컬렉션`
+```swift
+// Set
+var set: Set = [1, 2, 2, 3, 3, 3]
+
+// Array
+var arr: Array<Int> = [1, 2, 2, 3, 3, 3]
+```
+배열과 매우 비슷한 구조이기에 `Set`이라고 명시 해주어야 한다.<br>
+규칙 및 사용
+```text
+1. 생성시 타입 선언을 해야한다.
+2. 요소값을 중복으로 넣어도, 집합의 의미상 요소가 중복 저장되진 않는다. -> 순서가 없다.
+3. 내부적으로 값의 검색에 Hashing Algorithm을 사용하기 때문에 정렬 순서보다 검색속도가 중요한 경우에만 사용된다.
+4. 수학적 계산(합/교/차/대칭차집합)이 필요할 경우 내부 함수를 통해 쉽게 추출 가능하다.
+```
+집합의 정식 문법
+```swift
+var set: Set<Int> = [1, 2, 2, 3, 3, 3]
+```
+집합의 단축 문법
+```swift
+var set: Set = [1, 2, 2, 3, 3, 3]
+```
+빈 집합의 생성
+```swift
+let emptySet: Set<Int> = []
+let emptySet1 = set<Int>()
+```
+집합의 기본 기능
+```swift
+set.count
+set.isEmpty
+
+set.contains({value}) // 값이 존재하는지
+set.randomElement() // 랜덤 추출 1개
+```
+집합의 업데이트(삽입, 교체, 추가)
+```swift
+// 서브 스크립트 문법이 없다.
+
+set.update(with: 1) // 1이라는 요소(element)를 추가
+
+set.update(with: 7) // 새로운 요소가 추가? -> 최초 nil 반환
+```
+집합의 삭제
+```swift
+var stringSet: Set<String> = ["Apple", "Banana", "City", "Swift"]
+
+stringSet.remove("Swift") // Swift라는 element 삭제
+
+stringSet.remove("Steve") // 존재하지 않는 요소를 삭제? -> nil 반환, 오류는 아님
+
+stringSet.removeAll()
+stringSet.removeAll(keepingCapacity: true) // 저장공간(메모리 공간) 확보하고 삭제
+```
+집합의 활용
+```swift
+var a: Set = [1, 2, 3, 4, 5, 6, 7, 8, 9] // 10 이하 숫자
+var b: Set = [1, 3, 5, 7, 9] // 홀
+var c: Set = [2, 4, 6, 8, 10] // 짝
+var d: Set = [1, 7, 5, 9, 3] // 홀 섞음
+
+// 비교
+a == b // false
+a != b // true
+
+b == d // true, 순서는 없기 때문
+
+// 부분집합, 상위집합, 서로소
+// 아래 결과값은 모두 true
+b.isSubset(of: a) // true 부분집합의 여부
+b.isStrictSubset(of: a) // false 진부분집합의 여부
+
+a.isSuperset(of: b) // true 상위집합의 여부
+a.isStrictSuperset(of: b) // false 진부분집합의 여부
+
+d.isDisjoint(with: c) // true 서로소 여부
+
+// 합집합
+var unionSet = b.union(c)
+b.formUnion(c) // b를 변경함. 원본 자체 변경
+
+// 교집합
+var interSet = a.intersection(b)
+a.fromIntersection(b)
+
+// 차집합
+var subSet = a.subtracting(b)
+a.subtract(b) // 원본 변경
+
+// 대칭 차집합
+var symmetricSet = a.symmetricDifference(b)
+a.formSymmetricDifference(b)
+
+// 반복문
+let iteratingSet: Set = [1, 2, 3]
+
+for num in iteratingSet { 
+    print(num) // 정렬되지 않은 컬렉션이므로 실행시 순서가 다를 수 있음
+}
+```
