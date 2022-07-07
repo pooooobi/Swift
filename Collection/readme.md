@@ -435,3 +435,62 @@ for num in iteratingSet {
     print(num) // 정렬되지 않은 컬렉션이므로 실행시 순서가 다를 수 있음
 }
 ```
+
+## 컬렉션을 통한 스위프트 네이밍 가이드
+컬렉션 자체를 직접적으로 변환하는 경우
+```swift
+arr.sort()
+arr.reverse()
+arr.shuffle()
+```
+컬렉션 자체를 변환하지 않고 리턴만 받는 경우
+```swift
+arr.sorted()
+arr.reversed()
+arr.shuffled()
+```
+1. 컬렉션 자체를 직접적으로 변경하는 경우 동사원형 사용
+2. 컬렉션 변환 없이 리턴만 받는 경우 분사 형태(~ing/~ed)
+
+Swift
+```text
+Array(배열)
+Dictionary(딕셔너리)
+Set(집합, 세트) + KeyValuePairs
+```
+Foundation
+```text
+NSArray(배열) / NSMutableArray
+NSDictionary(딕셔너리) / NSMutableDictionary
+NSSet(집합, 세트) / NSMutableSet
+```
+
+## KeyValuePairs
+딕셔너리와 유사한 형태지만 배열처럼 순서가 있는 컬렉션이다.<br>
+_별로 중요하지 않음 !_
+```text
+1. Swift 5.2에 추가됨
+2. 딕셔너리와 비슷하지만 "순서"가 있다.
+3. Key 값이 Hashable 할 필요가 없다.
+4. Key 값의 유일성을 보장할 필요가 없다.
+```
+선언 방법
+```swift
+let introduce: KeyValuePairs = ["first" : "hello", "second" : "swift"]
+```
+기본 기능
+```swift
+introduce.count
+introduce.isEmpty
+```
+접근 방법
+```swift
+// 서브 스크립트 문법을 사용함
+introduce[0]
+```
+반복문과의 결합
+```swift
+for value in introduce {
+    print("\(value.key) : \(value.value)")
+}
+```
