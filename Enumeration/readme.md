@@ -278,3 +278,69 @@ for case .some(let number) in arrays {
     print("Found \(number)")
 }
 ```
+
+## 옵셔널 패턴(Optional Pattern)
+옵셔널 타입에서 열거형 케이스 패턴을 더 간소화한 옵셔널 패턴<br>
+열거형 내부에 연관값을 사용시 -> 열거형 케이스 패턴, 옵셔널 패턴
+```swift
+let a: Int? = 1
+
+// 열거형 케이스 패턴
+switch a {
+    case .some(let z):
+        print(z)
+    case .none:
+        print("nil")
+}
+
+// 옵셔널 패턴
+switch a {
+    case let z?:
+        print(z)
+    case nil: // .none도 가능
+        print("nil")
+}
+```
+옵셔널 패턴의 사례
+```swift
+let num: Int? = 7 // Optional(7)
+
+// 열거형 케이스
+switch num {
+    case .some(let x):
+        print(x)
+    case .none:
+        break
+}
+
+// 옵셔널
+switch num {
+    case let x?:
+        print(x)
+    case .none:
+        break
+}
+
+// if문 활용하 가능
+if case .some(let x) = num {
+    print(x)
+}
+
+if case let x? = num {
+    print(x)
+}
+```
+for(배열 활용)
+```swift
+let arr: [Int?] = [nil, 2, 3, nil, 5]
+
+// 열거형 케이스
+for case .some(let number) in arr {
+    print("Found \(number)")
+}
+
+// 옵셔널 패턴
+for case let number? in arr {
+    print("Found \(number)")
+}
+```
