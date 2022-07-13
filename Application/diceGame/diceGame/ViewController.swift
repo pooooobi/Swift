@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  diceGame
-//
-//  Created by 최영현 on 2022/07/09.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
