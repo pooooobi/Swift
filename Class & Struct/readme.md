@@ -162,3 +162,93 @@ class Dog {
     }
 }
 ```
+
+## 생성자의 역할, 초기화의 의미
+`init`메서드를 사용하여 생성자를 만들어 초기에 값을 넣을 수 있다.
+```swift
+class Dog {
+    var name = "강아지"
+    var weight = 0.0
+
+    init(n: String, w: Double) {
+        name = n
+        weight = w
+    }
+}
+```
+만약 init에서 변수 이름이 같으면 어떻게 해야할까 ?
+```swift
+class Dog {
+    var name = "강아지"
+    var weight = 0.0
+
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+}
+```
+1. 모든 저장 속성(변수, property)을 초기화 해야한다. -> 구조체, 클래스 동일함.
+2. 생성자 실행 종료시점에는 모든 속성의 초기값이 저장되어 있어야 함(초기화 되지 않는다면? 컴파일 오류 !)
+3. 생성자의 목적은 저장 속성 초기화.
+4. 클래스, 구조체, 열거형은 모두 설계도일 뿐, 실제 데이터(속성), 동작(메서드)을 사용하기 위해선 초기화 과정이 필요하다.
+
+## 생성자(initializr) 와 self 키워드
+인스턴스 내에서 동일한 변수, 상수명을 사용할 때 가르키는 것을 명확하게 하기 위해 `self` 키워드를 사용한다.
+```swift
+class Dog {
+    var name = "강아지"
+    var weight = 0.0
+
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+}
+```
+`self` 키워드는 클래스/구조체 내 해당 인스턴스(자기 자신)를 가르킨다.
+
+## 속성이 옵셔널 타입일 경우
+```swift
+class Dog {
+    var name: String?
+    var weight: Int
+
+    init(weight: Int) {
+        // self.name = "강아지"
+        self.weight = weight
+    }
+
+    func sit() {
+        print("\(name) 앉았습니다.")
+    }
+    
+    func layDown() {
+        print("\(name) 누웠습니다.")
+    }
+}
+
+var dog1 = Dog(weight: 10)
+dog1.name // nil
+```
+String? 타입에 의해 init에 없어도 nil로 초기화 된다 생각하면 편하다.<br>
+옵셔널 타입이기에 배웠던 옵셔널 바인딩으로 벗겨 사용할 수 있다.
+```swift
+if let name = dog1.name {
+    print(name)
+}
+
+guard let name = dog1.name else { return }
+print(name)
+```
+
+## 식별 연산자(Identity Operators)
+두개의 참조가 같은 인스턴스를 가르키고 있는지를 비교하는 방법임.<br>
+`===`, `!==`를 이용한다.
+```swift
+var dog1 = Dog(weight: 10)
+var dog2 = Dog(weight: 15)
+
+print(dog1 === dog2)
+print(dog1 !== dog2)
+```
