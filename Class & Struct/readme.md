@@ -114,3 +114,51 @@ swiftBook의 선언과 동시에 힙 영역에 존재하며, 스택 영역에서
 마찬가지로 구조체 또한 데이터 영역에 틀이 존재한다.
 하지만 인스턴스를 선언하면 힙에 있지 않고, 스택 영역에 존재한다.
 ```
+
+## 클래스와 구조체, let & var
+```swift
+class PersonClass {
+    var name = "사람"
+}
+
+struct AnimalStruct {
+    var name = "동물"
+}
+
+let pClass = PersonClass()
+let aStruct = AnimalStruct()
+```
+둘은 무슨 차이가 있을까?<br>
+1. `let`을 통한 선언시 클래스에서는 "메모리 주소를 변경할 수 없다"
+    - 한가지만 가르키는데, 최초 선언한 pClass에서는 PersonClass의 메모리 주소만 가르킨다. 임의변경 불가
+    - aStruct에서는 let으로 선언된 것이 스택 영역에서 보존되어 있다.
+2. 따라서, `let`으로 선언 했다 하더라도 pClass는 내부 속성을 변경할 수 있으나 aStruct는 내부 속성을 변경할 수 없다.
+```swift
+// 가능
+pClass.name = "사람1"
+
+// 불가능
+// aStruct.name = "동물1"
+```
+
+## 점문법 / 명시적 멤버 표현식(Explicit Member Expression)
+`.`을 이용하여 내부의 요소(클래스와 구조체의 인스턴스의 속성)에 접근한다.
+```swift
+var man = PersonClass()
+man.name = "테스트"
+
+Int.random(in: 1 ... 10)
+```
+
+## 관습적인 선언
+1. 속성과 메서드 순서대로 작성한다.
+```swift
+class Dog {
+    var name = ""
+    var weight = 0.0
+
+    func sit() {
+        print("앉았습니다.")
+    }
+}
+```
