@@ -265,3 +265,68 @@ class Circle {
 2. let 또는 var 둘다 선언 가능
 3. 타입 속성은 특정 인스턴스에 속한 속성이 아니기 때문에 인스턴스 이름으로는 접근 불가하다.
     - 타입(형식)에 접근연산자로 접근해야 한다.
+
+## 속성 감시자(Property Observer)
+저장 속성 감시자라고 생각하면 편하다.
+1. 속성 감시자(willSet) : 값이 저장되기 직전에 호출됨
+```swift
+class Profile {
+
+    // 계산 속성
+    var name: String = "이름"
+
+    // 저장속성 및 저장속성이 변하는 시점을 관찰하는 메서드
+    var statusMessage: String = "기본 상태메세지" {
+        willSet(message) {
+            print("메세지가 \(statusMessage)에서 \(message)로 변경 될 예정입니다.")
+        }
+    }
+}
+```
+2. 속성 감시자(didSet) : 새 값이 저장된 직후에 호출됨
+```swift
+class Profile {
+
+    // 계산 속성
+    var name: String = "이름"
+
+    // 저장속성 및 저장속성이 변하는 시점을 관찰하는 메서드
+    var statusMessage: String = "기본 상태메세지" {
+        willSet(message) {
+            print("메세지가 \(statusMessage)에서 \(message)로 변경 될 예정입니다.")
+        }
+        didSet(message) {
+            print("메세지가 \(statusMessage)에서 \(message)로 변경되었습니다.")
+        }
+    }
+}
+```
+초기화(init)할 때에는 willSet, didSet이 호출되진 않는다.<br>
+아래와 같이 파라미터를 생략할 수 있다 -> oldValue, newValue
+```swift
+class Profile {
+
+    // 계산 속성
+    var name: String = "이름"
+
+    // 저장속성 및 저장속성이 변하는 시점을 관찰하는 메서드
+    var statusMessage: String = "기본 상태메세지" {
+        willSet {
+            print("메세지가 \(statusMessage)에서 \(newValue)로 변경 될 예정입니다.")
+        }
+        didSet {
+            print("메세지가 \(oldValue)에서 \(statusMessage)로 변경되었습니다.")
+        }
+    }
+}
+```
+위 처럼 willSet, didSet을 두개 다 사용하는 경우는 없고, didSet을 주로 사용하는 경우가 많다.<br>
+속성 감시자는 왜 필요할까 ?
+1. 변수가 변하면, 변경내용을 반영하고 싶을 때(업데이트)
+
+반대로 주의할 점은 뭘까?
+1. 저장 속성(원래, 상속한 경우 둘 다 가능)
+2. 계산 속성(상속해서 재정의하는 경우만 가능)
+    - 속성 관찰자를 만드는 대신 계산 속성의 set블록에서 관찰할 수 있음
+3. let에선 추가 안됨(당연히..)
+4. lazy(지연저장)에 안됨
