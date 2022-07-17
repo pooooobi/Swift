@@ -74,3 +74,94 @@ class AView {
 2. 반드시 메모리 공간을 항상 차지할 필요가 없으므로 지연 저장 속성을 통한 메모리 누수(낭비) 방지
 3. 다른 속성들을 이용해야 할 때, 초기화 시점에 모든 속성들이 동시에 메모리 공간에 저장되므로, 어떤 한가지 속성이 다른 속성에 접근할 수가 없다.
 4. 지연 저장 속성을 이용하는 경우 지연으로 저장된 속성은 먼저 초기화된 속성에 접근할 수 있게 된다.
+
+## 계산 속성(Computed Properties)
+계산 속성은 `get`, `set` 두가지로 나누어진다.<br>
+내부에서는 실질적으로 함수처럼 계산하고, 해당 값을 가져와 설정해주는 개념이라 생각하면 된다.<br>
+_자바의 Getter, Setter와 헷갈리지 말자..._
+```swift
+class Person {
+    var name: String = "사람"
+    var height: Double = 160.0
+    var weight: Double = 60.0
+
+    var bmi: Double {
+        get {
+            let result = weight / (height * height) * 10000
+            return result
+        }
+    }
+}
+```
+```swift
+class Person {
+    var name: String = "사람"
+    var height: Double = 160.0
+    var weight: Double = 60.0
+
+    var bmi: Double {
+        return weight / (height * height) * 10000
+    }
+}
+```
+밖에서 해당 인스턴스에 접근해서 `get` 즉, 값을 얻는다는 의미로 사용된다.<br>
+그럼 `set`은 어떻게 사용할까?
+```swift
+class Person {
+    var name: String = "사람"
+    var height: Double = 160.0
+    var weight: Double = 60.0
+
+    var bmi: Double {
+        get {
+            let bmi = weight / (weight * weight) * 10000
+        }
+        set(bmi) {
+            weight = bmi * height * height / 10000
+        }
+    }
+}
+```
+밖에서 해당 인스턴스에 접근해서 `set` 즉, 값을 세팅한다는 의미로 사용된다.<br>
+1. 읽기만 가능한 계산속성(read-only)는 `get` 블록을 생략할 수 있다.
+```swift
+class Person {
+    var name: String = "사람"
+    var height: Double = 160.0
+    var weight: Double = 60.0
+    
+    var bmi: Double {
+        get {
+            let bmi = weight / (height * height) * 10000
+            return bmi
+        }
+        set {
+            weight = newValue * height * height / 10000
+        }
+    }
+}
+``` 
+2. set 블록의 파라미터를 생략하고 `newValue`로 대체할 수 있다.
+```swift
+class Person {
+    var name: String = "사람"
+    var height: Double = 160.0
+    var weight: Double = 60.0
+    
+    var bmi: Double {
+        get {
+            let bmi = weight / (height * height) * 10000
+            return bmi
+        }
+        set {
+            weight = newValue * height * height / 10000
+        }
+    }
+}
+```
+메서드가 아닌 속성방식으로 구현하면 무슨 장점이 있을까?
+1. 관련있는 두가지 메서드를 한번에 구현할 수 있다.
+2. 외부에서 보기에 속성이름으로 설정 가능하기에 보다 명확하다.
+3. 메서드를 개발자들이 보다 읽기 쉽고 명확하게 쓸 수 있는 형태인 속성으로 변환해 놓은 것이다.
+4. 계산 속성은 '겉모습은 속성(변수)'의 형태를 가진 메서드(함수)임
+5. 메모리 공간을 가지지 않고 해당 속성에 접근했을 때, 다른 속성에 접근하여 계산한 후 그 결과를 리턴하거나 세팅하는 메서드다.
