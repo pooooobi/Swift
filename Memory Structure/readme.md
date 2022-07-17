@@ -77,3 +77,26 @@ squareOfSum의 z 변수영역 생성 및 square 스택 영역 생성
 square 계산 후 스택 영역에서 사라짐
 squareOfSum에서 계산 후 startFunction에 리턴 후 사라짐
 ```
+
+## 메서드는 메모리에서 어떻게 동작할까 ?
+```swift
+class Dog {
+    var name: String
+    var weight: Int
+
+    init(name: String, weight: Int) {
+        self.name = name
+        self.weight = weight
+    }
+
+    func sit() {
+        print("\(name) 앉았습니다.")
+    }
+
+    func layDown() {
+        print("\(name) 누웠습니다.")
+    }
+}
+```
+위와 같은 코드가 있다. 해당 클래스는 데이터 영역에 선언될 것이고, 내부에 있는 메서드(method)는 데이터 영역 내 클래스에서 메모리 주소로 존재한다.<br>
+메모리 주소는 코드로 연결되고 스택 영역에서 메서드가 생성되어 실행되고, 만료시 파기된다.
