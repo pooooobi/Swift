@@ -165,3 +165,103 @@ class Person {
 3. 메서드를 개발자들이 보다 읽기 쉽고 명확하게 쓸 수 있는 형태인 속성으로 변환해 놓은 것이다.
 4. 계산 속성은 '겉모습은 속성(변수)'의 형태를 가진 메서드(함수)임
 5. 메모리 공간을 가지지 않고 해당 속성에 접근했을 때, 다른 속성에 접근하여 계산한 후 그 결과를 리턴하거나 세팅하는 메서드다.
+
+아래와 같은 내용은 주의하자.
+1. 항상 변하는 값이므로 `var`로만 선언 가능하다.
+2. 자료형 선언을 해야한다. 형식 추론 형태 안된다. 정식 선언 해야한다.
+3. get은 반드시 선언 해야하나, set은 선택이다.
+
+## 타입 속성(Type Properties)
+타입 속성에는 `저장 속성`, `계산 타입 속성` 두가지가 존재한다.
+```swift
+class Dog {
+    
+    static var species: String = "Dog"
+    
+    var name: String
+    var weight: Double
+    
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+
+}
+
+let dog = Dog(name: "초코", weight: 15.0)
+dog.name
+dog.weight
+
+// dog.species -> 이거 안됨 !
+Dog.species
+```
+`static` 고정적인, 고정된 이라는 키워드를 추가한 저장속성이다.<br>
+접근은 인스턴스에서 점을 찍어도 나타나지 않아, 타입(형식)에 접근연선자로 접근한다.<br>
+저장 속성, 계산 속성 두가지 모두 타입 속성이 될 수 있다.
+1. 저장 타입(형식) 속성
+```swift
+class Circle {
+    
+    // (저장) 타입 속성 (값이 항상 있어야 함)
+    static let pi: Double = 3.14
+    static var count: Int = 0   // 인스턴스를 (전체적으로)몇개를 찍어내는지 확인
+    
+    // 저장 속성
+    var radius: Double     // 반지름
+    
+    // 계산 속성
+    var diameter: Double {     // 지름
+        get {
+            return radius * 2
+        }
+        set {
+            radius = newValue / 2
+        }
+    }
+    
+    // 생성자
+    init(radius: Double) {
+        self.radius = radius
+        //Circle.count += 1
+    }   
+}
+```
+2. 계산 타입(형식) 속성
+```swift
+class Circle {
+    
+    // 저장 타입 속성
+    static let pi: Double = 3.14
+    static var count: Int = 0
+    
+    
+    // (계산) 타입 속성(read-only)
+    static var multiPi: Double {
+        return pi * 2
+    }
+    
+    // 저장 속성
+    var radius: Double     // 반지름
+    
+    
+    // 생성자
+    init(radius: Double) {
+        self.radius = radius
+    }
+    
+}
+```
+
+## 타입 속성에 대한 메모리 구조의 이해
+1. 인스턴스를 생성할 때, 생성자에서 모든 속성을 초기화
+2. 해당 저장 속성은 각 인스턴스가 가진 고유한 값임
+3. 저장 타입 속성은 생성자(init)가 필요없기 때문에 타입 자체에 속한 속성이기에 항상 기본값 필요(생략 불가)
+4. 지연 속성(lazy)의 성격을 가짐
+5. 저장 타입속성은 기본적으로 지연 속성이지만, lazy라고 선언할 필요가 없음
+    - 여러 스레드에서 동시에 엑세스해도 한번만 초기화 됨 -> Thread-Safe
+
+주의할 점은 아래와 같다.
+1. 타입 속성은 클래스, 구조체, 열거형에 모두 추가할 수 있다.
+2. let 또는 var 둘다 선언 가능
+3. 타입 속성은 특정 인스턴스에 속한 속성이 아니기 때문에 인스턴스 이름으로는 접근 불가하다.
+    - 타입(형식)에 접근연산자로 접근해야 한다.
