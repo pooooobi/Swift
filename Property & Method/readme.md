@@ -330,3 +330,95 @@ class Profile {
     - 속성 관찰자를 만드는 대신 계산 속성의 set블록에서 관찰할 수 있음
 3. let에선 추가 안됨(당연히..)
 4. lazy(지연저장)에 안됨
+
+## 인스턴스 메소드(Instance Method)
+```swift
+struct Bear {
+    var name: String
+    var weight: Double
+
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+
+    func eat() {
+        print("\(name) 이 음식을 먹습니다.")
+    }
+}
+
+let pobi = Bear(name: "pobi", weight: 80.1)
+
+// 인스턴스(객체)의 메서드
+pobi.eat()
+```
+우리가 평소에 사용하는 것이라 생각하면 된다.<br>
+1. 클래스의 인스턴스 메서드
+```swift
+class Bear {
+    static var species = "Bear"
+
+    var name: String
+    var weight: Double
+
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+
+    func eat() {
+        print("\(name) 이 음식을 먹습니다.")
+    }
+
+    func sit() {
+        print("\(name)이 앉았습니다.")
+    }
+
+    func training() {
+        print("\(Bear.species)가 훈련을 시작합니다.")
+        sit()
+        self.sit() // self 키워드는 명확하게 지칭하는 역할이므로 생략 가능
+    }
+
+    func changeName(newName name: String) {
+        self.name = name
+    }
+}
+```
+2. 구조체의 인스턴스 메서드
+    - 값 타입(구조체, 열거형)에서 기본적으로 인스턴스 메서드 내에서 속성을 수정할 수 없음.
+    - 수정하려면 `mutating` 키워드를 사용해야 한다.
+```swift
+struct Bear {
+    static var species = "Bear"
+
+    var name: String
+    var weight: Double
+
+    init(name: String, weight: Double) {
+        self.name = name
+        self.weight = weight
+    }
+
+    func eat() {
+        print("\(name) 이 음식을 먹습니다.")
+    }
+
+    func sit() {
+        print("\(name)이 앉았습니다.")
+    }
+
+    func training() {
+        print("\(Bear.species)가 훈련을 시작합니다.")
+        sit()
+        self.sit() // self 키워드는 명확하게 지칭하는 역할이므로 생략 가능
+    }
+
+    mutating func changeName(newName name: String) {
+        self.name = name
+    }
+}
+```
+3. 오버로딩(Overloading)
+    - 함수에서의 오버로딩과 동일하게 클래스, 구조체, 열거형의 메서드에서도 오버로딩을 지원한다.
+
