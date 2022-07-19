@@ -460,3 +460,42 @@ class SomethingClass: SomeClass {
 
 SomethingClass.someTypeMethod()
 ```
+
+## 서브 스크립트(Subscripts)
+`[]`를 이용해 접근하는걸 서브스크립트 문법이라 한다.
+```swift
+var array = ["Apple", "Swift", "iOS"]
+
+array[0]
+array[1]
+array[2]
+```
+이런식으로 접근하는데, 우리가 메서드를 접근할 때 `instanceName.MethodName()`의 형식으로 하는데, 이를 `instanceName[Parameter]`로 하려 한다.<br>
+서브스크립트는 특별한 형태의 메서드를 의미한다.
+```swift
+class SomeData {
+    var datas = ["Apple", "Swift", "iOS"]
+
+    subscript(index: Int) -> String {
+        get {
+            return datas[index]
+        }
+        set(parameterName) {
+            datas[index] = parameterName
+        }
+    }
+}
+
+var data = SomeData()
+```
+파라미터와 리턴형을 생략할 수 없다. 읽기 전용(read-only)으로 선언 가능하다.<br>
+타입 서브스크립트로도 가능하다.
+```swift
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+
+    static subscript(index: Int) -> Planet {
+        return Planet(rawValue: index)!
+    }
+}
+```
