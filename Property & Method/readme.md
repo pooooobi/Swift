@@ -499,3 +499,39 @@ enum Planet: Int {
     }
 }
 ```
+
+## 접근제어(Access Control)
+외부에서 접근할 수 없게 막아버리는 방법이 존재한다.
+```swift
+class SomeClass {
+    private var name = "이름"
+
+    func nameChange(name: String) {
+        self.name = name
+    }
+}
+```
+외부에서 name에 접근할 수 없기 때문에 nameChange를 따로 선언했다.<br>
+구조체는 이렇게 하면 된다.
+```swift
+struct SomeStruct {
+    private var name = "이름"
+
+    mutating func nameChange(name: String) {
+        self.name = name
+    }
+}
+```
+
+## 싱글톤 패턴(Singleton Pattern)
+```swift
+class SingletonPattern {
+    static let shared = SingletonPattern()
+
+    // ...생략
+} 
+
+// 데이터 영역에 생성
+SingletonPattern.shared
+```
+변수로 접근하는 순간 lazy 하게 동작하여 데이터 영역에 올라간다.
