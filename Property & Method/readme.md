@@ -534,4 +534,13 @@ class SingletonPattern {
 // 데이터 영역에 생성
 SingletonPattern.shared
 ```
-변수로 접근하는 순간 lazy 하게 동작하여 데이터 영역에 올라간다.
+변수로 접근하는 순간 lazy 하게 동작하여 데이터 영역에 올라간다.<br>
+싱글톤은 객체 딱 하나만 존재해야 하는데, 위같은 코드는 생성자에 의해 생성될 수 있다. 따라서 특별한 조치가 필요하다.
+```swift
+class SingletonPattern {
+    static let shared = SingletonPattern()
+
+    private init() { }
+}
+```
+이렇게 하면 생성자로 새로운 객체를 만들 수 없다.
