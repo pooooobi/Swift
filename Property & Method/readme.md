@@ -422,3 +422,41 @@ struct Bear {
 3. 오버로딩(Overloading)
     - 함수에서의 오버로딩과 동일하게 클래스, 구조체, 열거형의 메서드에서도 오버로딩을 지원한다.
 
+## 타입 메서드(Type Method)
+```swift
+struct Bear {
+    static var species = "Bear"
+
+    var name: String
+    var weight: Double
+
+    // 내용 생략
+
+    static func letMeKnow() {
+        print("곰은 영어로 \(species) 입니다.")
+    }
+}
+
+Bear.letMeKnow()
+```
+우리가 쓰는 `Int.random(in: 1...100)`도 타입 메서드이고, `Double.random(in: 1.5...3.7)` 또한 타입 메서드다.<br>
+`static`, `class` 모두 사용 가능하지만 static은 상속 후 재정의가 불가능하고, class는 반대로 상속 후 재정의가 가능하다.
+```swift
+// 상위 클래스
+class SomeClass {
+    class func someTypeMethod() {
+        print("class func print")
+    }
+}
+
+SomeClass.someTypeMethod()
+
+// 상속한 서브 클래스
+class SomethingClass: SomeClass {
+    override class func someTypeMethod() {
+        print("override class func print")
+    }
+}
+
+SomethingClass.someTypeMethod()
+```
