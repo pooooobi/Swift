@@ -293,3 +293,105 @@ Undergraduate에서 Person의 id를 사용할 수 있고.. Student의 StudentId�
 
 2. 저장속성은 재정의 할 수 없다.
     - 재정의를 하려면 `override` 키워드를 붙여 사용하는데, 막상 저장속성은 오류가 날 것이다. 불가능하기 때문에...
+3. 재정의(Overriding)
+    - 오버라이딩은 클래스의 상속에서 상위 클래스의 속성, 메서드를 재정의(변형)하여 사용하는 것이다.
+    - 서브클래스에서 슈퍼클래스의 동일한 멤버를 변형하여 구현하는 것.
+    - 속성(저장속성에 대한 재정의는 절대 불가), 메서드(method, subscripts, init...)가 재정의 가능하나 둘이 방법이 다름.
+```swift
+// 오버라이딩의 기본 문법
+
+// 슈퍼 클래스
+class AClass {
+    var aValue = 0
+
+    func doSomething() {
+        print("DO SOMETHING")
+    }
+}
+
+// 서브 클래스
+class BClass: AClass {
+    // 저장속성은 재정의 할 수 없음. 단, 저장속성 => 계산속성 으로 재정의는 가능하다.
+    override var aValue: Int {
+        get {
+            return 1
+        }
+        set {
+            // super 키워드는 슈퍼 클래스의 aValue를 의미한다.
+            super.aValue = newValue
+        }
+    }
+
+    // 메서드는 재정의 가능!
+    override func doSomething() {
+        super.doSomething()
+        print("DO SOMETHING 2")
+    }
+}
+```
+3. 1 . 속성의 재정의
+    - 저장속성의 재정의 : 원칙적으로 불가능
+        - 저장 속성은 고유의 메모리 공간이 있으므로 하위 클래스에서 변경 불가능함.
+        - 단, 메서드 형태(계산 속성, 속성 감시자)로 추가하는 방식은 가능하다.
+    - 계산 속성(메서드)의 재정의 : 기능의 범위를 축소하는 형태로는 재정의가 불가능함.
+        - 상위에서 읽기만 가능하다면, 하위에서는 읽기 쓰기로 확장은 가능함.
+        - 상위에서 읽기 쓰기가 모두 가능한데, 하위에서 읽기만 하는 방식은 불가능함.
+    - 타입 저장 속성의 재정의 : 조건부 가능
+        - static : 불가능
+        - class : 가능
+        - 재정의한 타입 저장/계산 속성에는 감시자 속성 추가 불가능.
+```swift
+// 속성의 재정의 예시
+// 차량 클래스(슈퍼 클래스)
+class Vehicle {
+    var currentSpeed = 0.0
+
+    var halfSpeed: Double {
+        get {
+            return currentSpeed / 2
+        }
+        set {
+            currentSpeed = newValue * 2
+        }
+    }
+}
+
+// 오토바이 클래스(하위 클래스)
+class Bicycle: Vehicle {
+    // 저장속성 추가 가능
+    var hasBasket = false
+
+    // 저장속성 => 계산속성 재정의 가능.
+    override var currentSpeed: Double {
+        get {
+            return super.currentSpeed
+        }
+        set {
+            super.currentSpeed = newValue
+        }
+        /* 속성 감시자를 추가하는 재정의도 가능.
+        willSet {
+            print("\(currentSpeed) => \(newValue) 변경 예정")
+        }
+        didSet {
+            print("\(currentSpeed) => \(newValue)로 변경됨")
+        }
+        */
+    }
+    
+    // 계산 속성을 재정의 할 수 있음. 또한 재정의하면서 속성 감시자를 추가할 수 있음. (내용생략)
+    override var halfSpeed: Double {
+        get {
+            return super.currentSpeed / 2
+        }
+        set {
+            super.currentSpeed = newValue * 2
+        }
+    }
+}
+```
+4. 메서드의 재정의
+    - 속성에 비해 메서드의 재정의는 자유로움(단, 메모리 생성 규칙 존재)
+    - 상위 클래스 인스턴스 메서드 또는 타입 메서드 상관 없이 기능을 추가하는 것 가능함.
+    - 상위 기능을 무시하고 새롭게 구현하는 것 또한 가능함.
+    - 기능 추가시 상위 구현기능을 사용할지 여부는 본인의 선택. `super.functionName()`
