@@ -252,3 +252,44 @@ var dog2 = Dog(weight: 15)
 print(dog1 === dog2)
 print(dog1 !== dog2)
 ```
+
+## 클래스의 상속과 초기화(Class Inheritance & Initialization)
+클래스에서 상속이라는 개념이 존재한다. 구조체에는 존재하지 않음 !!
+1. 본질적으로 성격이 비슷한 타입을 새로 만들어 데이터(저장속성)을 추가하거나, 기능(메서드)를 변형시켜서 사용한다.
+```swift
+class Person {
+    var id = 0
+    var name = "이름"
+    var email = "test@test.com"
+}
+
+class Student: Person {
+    var studentId = 0
+}
+
+class Undergraduate: Student {
+    var major = "전공"
+}
+```
+위 코드를 살펴보면 Undergraduate(대학생)은 Student(학생)을 상속하고, Student(학생)은 Person(사람)을 상속한다.<br>
+Undergraduate에서 Person의 id를 사용할 수 있고.. Student의 StudentId도 사용할 수 있다.<br>
+메모리 공간을 살펴보면 다음과 같을 것이다.
+```text
+=====[Undergraduate]=====
+|        major          |
+|   ====[Student]====   |
+|   |   studentId   |   |
+|   |               |   |
+|   |===[Person]=== |   |
+|   ||     id     | |   |
+|   ||    name    | |   |
+|   ||   email    | |   |
+|   |-------------- |   |
+|   -----------------   |
+-------------------------
+```
+이런 공간이 힙 스택에서 존재 할 것이다. 따라서 위에서 설명한 Undergraduate에서 id를 사용할 수 있는지 느낌을 알 수 있을것이다.<br>
+상속은 하나만 가능하기에, 스위프트에서 다중 상속은 불가능하다.
+
+2. 저장속성은 재정의 할 수 없다.
+    - 재정의를 하려면 `override` 키워드를 붙여 사용하는데, 막상 저장속성은 오류가 날 것이다. 불가능하기 때문에...
