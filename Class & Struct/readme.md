@@ -395,3 +395,49 @@ class Bicycle: Vehicle {
     - 상위 클래스 인스턴스 메서드 또는 타입 메서드 상관 없이 기능을 추가하는 것 가능함.
     - 상위 기능을 무시하고 새롭게 구현하는 것 또한 가능함.
     - 기능 추가시 상위 구현기능을 사용할지 여부는 본인의 선택. `super.functionName()`
+5. 초기화(Initialization)와 생성자(Initializer)
+    - 초기화 -> 저장속성에 대한 초기값을 설정하여 인스턴스를 사용 가능한 상태로 만드는 것
+    - 생성자 -> 인스턴스의 모든 저장속성이 초기값을 가지지 않기 때문에, 초기값을 만들게 끔 하는 것
+```swift
+// 생성자 구현의 기본
+class Color {
+    let red: Double
+    let green: Double
+    let blue: Double
+
+    init() {
+        red = 0.0
+        green = 0.0
+        blue = 0.0
+    }
+
+    // 생성자도 오버로딩 할 수 있음 !
+    init(white: Double) {
+        red = white
+        green = white
+        blue = white
+    }
+
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+}
+```
+5. 1 . 초기화의 방법
+    - 저장 속성의 선언과 동시에 값을 저장
+    - 저장 속성을 옵셔널로 선언
+    - 생성자에서 값을 초기화
+    - ⚠️ 반드시 생성자를 정의할 필요는 없고, 위 1~2번 내용으로 해도 자동적으로 기본 생성자(Default)를 생성함.
+5. 2 . 멤버와이즈 이니셜라이저(Memberwise Initializer)
+    - 구조체는 멤버와이즈 이니셜라이져 자동 제공
+```swift
+struct Color {
+    var red: Double = 1.0
+    var green: Double = 1.0
+    var blue
+}
+
+var a = Color(red: 1.0, green: 2.0, blue: 254.0)
+```
