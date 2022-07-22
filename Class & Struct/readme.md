@@ -441,3 +441,195 @@ struct Color {
 
 var a = Color(red: 1.0, green: 2.0, blue: 254.0)
 ```
+6. 생성자(Initializer)
+    - 구조체 : 지정 생성자, 실패 가능 생성자
+    - 클래스 : 지정 생성자, 편의 생성자(상속관련), 필수 생성자(상속관련), 실패 가능 생성자
+```swift
+// 구조체의 지정 생성자
+// 생성자 내에서 self.init(...)을 사용하여 다른 이니셜라이저를 호출하도록 할 수 있음
+struct Color {
+    let red, green, blue: Double
+
+    init() {
+        self.init(red: 0.0, green: 0.0, blue: 0.0)
+    }
+
+    init(white: Double) {
+        self.init(red: white, green: white, blue: white)
+    }
+
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+}
+
+// 클래스의 지정 생성자, 편의 생성자
+class Color {
+    let red, green, blue: Double
+
+    convenience init() {
+        self.init(red: 0.0, green: 0.0, blue: 0.0)
+    }
+
+    convenience init(white: Double) {
+        self.init(red: white, green: white, blue: white)
+    }
+
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+}
+```
+6. 1 . 편의 생성자 : `convenience` 키워드 사용
+    - 모든 속성을 초기화하지 않는다면 편의생성자로 만드는 것이 복잡도나 실수를 줄일 수 있다.
+    - 클래스의 상속, 지정 생성자와 편의 생성자의 호출 규칙
+```text
+Delegate Up: 서브 클래스의 지정 생성자는 슈퍼 클래스의 지정 생성자를 반드시 호출해야 한다.
+Delegate Across: 편의 생성자는 동일한 클래스에서 다른 이니셜라이저를 호출해야 하고, 궁극적으로 지정생상자를 호출해야 한다.
+인스턴스 메모리 생성에 대한 규칙이 존재한다.
+```
+7. 생성자의 상속/재정의
+    - 하위클래스는 기본적으로 상위클래스 생성자를 상속하지 않고 재정의(동일한 이름을 가진 생성자 구현)가 원칙
+    - 원칙 1) 상위의 지정생성자(이름 및 파라미터) 고려
+    - 원칙 2) 현재단계의 저장속성을 고려해서 구현
+```swift
+
+class AClass {
+    var x = 0
+    
+    // init() { }
+}
+
+let a = AClass()
+
+class BClass: AClass {
+    var y: Int
+
+// [1단계] 상위 지정 생성자 고려
+    // 선택 1) 지정 생성자로 재정의
+    override init() {
+        self.y = 0
+        super.init() // x 설정
+    }
+
+    // 선택 2) 서브 클래스에서 편의 생성자로 구현
+    override convenience init() {
+        self.init(y: 0)
+    }
+
+    // [2단계] 현재단계의 생성자 구현
+    init(y: Int) {
+        self.y = y
+        super.init()
+    }
+}
+
+let b = BClass()
+
+class CClass: BClass {
+    var z: Int
+
+    override init() {
+        self.z = 0
+        super.init()
+    }
+
+    init(z: Int) {
+        self.z = z
+        super.init()
+    }
+}
+
+// Apple Swift Document EX
+class Vehicle {
+    var numberOfWheels = 0
+
+    var description: String {
+        return "\(numberOfWheels) wheel(s)"
+    }
+
+    // init() { }
+}
+
+class Bicycle: Vehicle {
+    override init() {
+        super.init()
+        numberOfWheels = 2
+    }
+}
+
+// sub-class
+class Hoverboard: Vehicle {
+    var color: String
+
+    override var description: String {
+        return "\(super.description) in a beautiful \(color)"
+    }
+
+    init(color: String) {
+        self.color = color
+        super.init()
+    }
+}
+```
+7. 1 . 예외상황
+    - (실패 가능성이 없으면) 새 저장 속성이 없거나, 기본값이 설정되어 있다면 => 슈퍼클래스의 지정생성자 모두 자동 상속됨
+    - (실패 가능성 존재시) 자동 상속됨. 지정 생성자를 자동으로 상속하거나, 상위 지정생성자 모두 재정의를 구현해야 함.
+    - 결국, 모든 지정생성자를 상속하는 상황이 되면 편의 생성자는 자동으로 상속된다.
+```swift
+// 애플 공식문서의 예제
+class Food {
+    var name: String
+
+    init(name: String) {
+        self.name = name
+    }
+
+    convenience init() {
+        self.init(name: "[Unnamed]")
+    }
+}
+
+let namedMeat = Food(name: "Bacon") // Bacon
+let mysteryMeat = Food() // [Unnamed]
+
+class RecipeIngredient: Food {
+    var quantity: Int
+
+    init(name: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(name: name)
+    }
+
+    override convenience init(name: String) {
+        self.init(name: name, quantity: 1)
+    }
+
+    // convenience init 자동 상속
+}
+
+let oneMysteryItem = RecipeIngredient()
+oneMysteryItem.name // [Unnamed]
+oneMysteryItem.quantity // 1
+
+let oneBacon = RecipeIngredient(name: "Bacon")
+let sixEggs = RecipeIngredient(name: "Eggs", quantity: 6)
+
+class ShoppingListItem: RecipeIngredient {
+    var purchased = false
+
+    var description: String {
+        var output = "\(quantity) x \(name)"
+        output += purchased ? "OK" : "X"
+        return output
+    }
+}
+```
+## 보충
+1. 지정 생성자의 역할은 모든 저장속성의 초기값 셋팅이다.
+2. 그런데 편의 생성자는 지정 생성자를 "무조건" 호출하고, 편의 생성자는 지정 생성자에서 모든 저장 속성값을 셋팅하니, 편의 생성자 자체로는 아무것도 할 수가 없다.
+3. 그래서 일반적으로 편의 생성자는 모든 속성을 초기화하지 않을 때 구현하되, 편의 생성자가 지정 생성자를 호출하니, 내부에서는 모든 저장속성 값을 결국 지정 생성자가 셋팅한다.
