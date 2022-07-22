@@ -629,6 +629,100 @@ class ShoppingListItem: RecipeIngredient {
     }
 }
 ```
+8. 필수 생성자(Required)
+    - 생성자 앞에 `required` 키워드를 붙여 사용하고, 하위 생성자는 반드시 해당 생성자를 구현해야만 한다.
+    - override를 사용하지 않고 required를 이용하면 된다.
+```swift
+class AClass {
+    var x: Int
+    
+    required init(x: Int) {
+        self.x = x
+    }
+}
+
+class BClass: ACless {
+    // 구현 안하면 자동 구현됨 !
+}
+
+class CClass: AClass {
+    init() {
+        super.init(x: 0)
+    }
+
+    required init(x: Int) {
+        super.init(x: x)
+    }
+}
+```
+9. 실패 가능 생성자(Failable Initializers)
+    - 인스턴스 생성에 실패할 수도 있는 가능성이 있는 생성자
+    - 실패가능 생성자를 정의하고 예외처리를 하는것이 좋음.
+    - 생성자에 `?`를 붙여 정의한다.
+    - 실패 가능 생성자는 실패 불가능 생성자를 호출할 수 있다.
+    - 실패 불가능 생성자는 실패 가능 생성자를 호출할 수 없다.
+
+```swift
+// 예시
+struct Animal {
+    let species: String
+
+    init?(species: String) {
+        if species.isEmpty {
+            return nil
+        }
+        self.species = species
+    }
+}
+
+let a = Animal(species: "Bear") // 인스턴스 생성 성공
+let b = Animal(species: "") // nil
+
+// 활용
+enum TemperatureUnit {
+    case kelvin
+    case celsius
+    case fahrenheit
+
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = TemperatureUnit.kelvin
+        case "C":
+            self = TemperatureUnit.celsius
+        case "F":
+            self = TemperatureUnit.fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+```
+10. 소멸자(Deinitialers)
+    - `deinit` 키워드로 사용한다.
+    - 인스턴스가 메모리에서 헤제되기 직전 정리가 필요한 내용을 구현하는 메서드
+    - 클래스 정의시 최대 1개의 소멸자를 정의할 수 있음
+    - 소멸자는 파라미터를 사용하지 않음
+```swift
+class AClass {
+    var x = 0
+
+    deinit {
+        print("인스턴스 소멸")
+    }
+}
+
+var a: AClass? = AClass()
+a = nil
+```
+10. 1 . 소멸자 작동 방식
+    - Swift는 클래스의 인스턴스를 자동 참조 계산(ARC) 방식을 통해 메모리를 관리한다.
+    - 일반적인 경우에는 메모리에서 해제될 때 수동으로 관리를 수행할 필요가 없다.
+    - 단, 특별한 작업을 수행중인 경우 추가 정리가 필요할 수 있음
+    - 상속이 있는 경우 상위클래스 소멸자는 해당 하위클래스에 의해 상속됨
+    - 상위클래스 소멸자는 하위클래스 소멸자의 실행이 끝날 때 자동으로 호출됨
+    - 상위클래스 소멸자는 하위클래스가 자체적인 소멸자를 제공하지 않아도 항상 호출됨
+    
 ## 보충
 1. 지정 생성자의 역할은 모든 저장속성의 초기값 셋팅이다.
 2. 그런데 편의 생성자는 지정 생성자를 "무조건" 호출하고, 편의 생성자는 지정 생성자에서 모든 저장 속성값을 셋팅하니, 편의 생성자 자체로는 아무것도 할 수가 없다.
