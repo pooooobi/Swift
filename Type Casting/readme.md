@@ -58,3 +58,33 @@ for someOne in people {
 
 print(studentNumber)
 ```
+
+## 인스턴스 타입의 (메모리 구조에 대한) 힌트를 변경하는 as 연산자
+1. 업캐스팅(Upcasting)
+    - 인스턴스 as 타입
+    - 하위클래스의 메모리구조로 저장된 인스턴스를 상위 클래스로 인식
+2. 다운캐스팅(Downcasting)
+    - 인스턴스 as? 타입
+        - 참이면 반환 타입은 Optional
+        - 실패시 nil 반환
+    - 인스턴스 as! 타입
+        - 참이면 변환 타입은 Optional 타입의 값을 강제 언래핑한 타입
+        - 실패시 런타임 오류
+```swift
+let ppp = person as? Undergraduate
+
+// 활용 방법 (if let 바인딩), 다운 캐스팅
+if let newPerson = person as? Undergraduate {
+    newPerson.major
+    print(newPerson.major)
+}
+
+// 업 캐스팅
+let undergraduate2: Undergraduate = Undergraduate()
+let person4 = undergraduate2 as Person
+
+// Bridging => 서로 호환되는 형식을 캐스팅해서 쉽게 사용하는 것
+// Swift에서 여전히 Objective-C 프레임워크를 사용하는 것이 많아 상호 호환 되도록 설계됨
+let str: String = "Hello"
+let otherStr = str as NSString
+```
