@@ -88,3 +88,61 @@ let person4 = undergraduate2 as Person
 let str: String = "Hello"
 let otherStr = str as NSString
 ```
+
+## 타입과 다형성(Polymorphism)
+1. 다형성
+    - 하나의 객체(인스턴스)가 여러 타입의 형태로 표현될 수 있다.
+    - 다형성의 구현은 클래스의 상속, 프로토콜과 연관이 있음.
+```swift
+let people: [Person] = [Person(), Student(), Undergraduate()]
+
+for person in people {
+    person.walk()
+}
+```
+상속 관계에서 다형성은 메서드를 통해 발현된다.<br>
+업캐스팅된 타입 형태의 메서드를 호출하더라도 실제 메모리에서 구현된 재정의된 메서드가 호출되어 실행된다.
+
+## Any, AnyObject를 위한 타입 캐스팅
+1. 스위프트에서 제공하는 불특정한 타입을 다룰 수 있는 타입을 제공한다.
+    - Any 타입
+        - 기본 타입, 커스텀 클래스, 구조체, 열거형, 함수 타입까지도 포함하여 어떤 타입의 인스턴스도 표현할 수 있는 타입
+        - Optional 포함
+        - 저장된 타입의 메모리 구조를 알 수 없어 항상 타입캐스팅 해서 사용하야함.
+        - 모든 타입을 담을 수 있는 배열 생성 가능
+    - AnyObject 타입
+        - 어떤 클래스 타입의 인스턴스도 표현할 수 있는 타입
+```swift
+// Any
+var some: Any = "Swift"
+let array: [Any] = [5, "Hello", 2.7, Person(), Superman(), {(name: String) in return name}]
+
+// AnyObject
+let objArray: [AnyObject] = [Person(), Superman(), NSString()]
+
+// TypeCasting + 분기처리
+
+for (index, item) in array.enumerated() {
+    switch item {
+    case is Int:
+        print("INDEX: \(index), 정수")
+    case let num as Double:
+        print("INDEX: \(index), 소수 \(num)")
+    case is String:
+        print("INDEX: \(index), 문자열")
+    case is (String) -> String:
+        print("INDEX: \(index), 클로저 타입")
+    default:
+        print("INDEX: \(index), 이외의 타입임")
+    }
+}
+```
+2. 옵셔널의 Any 반환
+    - 의도적으로 옵셔널을 사용하는 경우
+        - Any는 모든 타입을 포함하므로 의도적으로 옵셔널 값을 사용하려면 Any 타입으로 변환하면 컴파일러가 알려주는 경고를 없앨 수 있음
+    - 옵셔널 값은 임시적인 값으므로 옵셔널 바인딩을 통해 언래핑하여 사용하는데, Any로 변환한다는 것은 옵셔널을 사용하겠다는 의미임.
+```swift
+let optionalNum: Int? = 3
+print(optionalNum) // 경고
+print(optionalNum as Any) // 경고 X
+```
