@@ -117,8 +117,127 @@ extension Int {
 }
 ```
 4. 새로운 생성자
-    - 단, 클래스의 경우 편의 생성자만 추가할 수 있으며, 지정 생성자 및 소멸자는 반드시 본체에 구현해야 함
+    - 클래스
+        - 클래스의 경우 편의 생성자만 추가할 수 있으며, 지정 생성자 및 소멸자는 반드시 본체에 구현해야 함
+        - 지정생성자 및 소멸자 추가 불가
+    - 구조체
+        - 편의 생성자가 존재하지 않고 상속과 관련이 없어 * 지정 생성자의 형태로도 생성자 구현 가능 *
+        - 생성자를 추가하여본체의 지정 생성자를 호출하는 방법으로 구현 가능
+        - 새롭게 지정 생성자 형태로 구현하는 것도 가능
+        - 직접 생성자를 구현하면 기본 생성자 init(), 멤버와이즈 생성자 제공 안되는 것이 원칙
+        - 모든 저장속성에 기본값을 제공하고 본체에 직접 생성자를 구현하지 않는다면 확장에서 괜찮음
+```swift
+// 구조체
+struct Point {
+    var x = 0.0, y = 0.0
+
+    // init(x: Double, y: Double)
+
+    // init()
+}
+
+struct Size {
+    var width = 0.0, height = 0.0
+}
+
+// 기본값을 제공하고 생성자를 구현 안함 => 기본 생성자, 멤버와이즈 생성자가 자동 제공중
+struct Rect {
+    var origin = Point()
+    var size = Size()
+}
+
+let defaultRect = Rect()
+
+let memberwiseRect = Rect(origin: Point(x: 2.0, y: 2.0), size: Size(width: 5.0, height: 5.0))
+
+extension Rect {
+    init(center: Point, size: Size) {
+        let originX = center.x - (size.width / 2)
+        let originY = center.y - (size.height / 2)
+
+        // 본체의 멤버와이즈 생성자 호출 방식으로 구현 가능
+        self.init(origin: Point(x: originX, y: originY), size: size)
+
+        // 직접 값을 설정할 수 있음
+        self.origin = Point(x: originX, y: originY)
+        self.size = size
+    }
+}
+
+let centerRect = Rect(center: Point(x: 4.0, y: 4.0), size: Size(width: 3.0, height: 3.0))
+
+// 클래스
+var color = UIColor(red: 0.3, green: 0.5, blue: 0.4, alpha: 1)
+
+extension UIColor { // 확장: 편의 생성자
+    convenience init(color: CGFloat) {
+        self.init(red: color/255, green: color/255, blue: color/255, alpha: 1)
+    }
+}
+
+UIColor(color: 1)
+```
 5. 서브스크립트
-6. 새로운 중첩 타입 정의 및 사용
+    - 메서드이므로 가능함 !
+```swift
+extension Int {
+    subscript(num: Int) -> Int {
+
+        var decimalBase = 1
+
+        for _ in 0..<num {
+            decimalBase *= 10
+        }
+
+        return (self / decimalBase) % 10
+    }
+}
+
+123456789[0]      // (123456789 / 1) ==> 123456789 % 10 ==> 나머지 9
+123456789[1]      // (123456789 / 10) ==> 12345678 % 10 ==> 나머지 8
+123456789[2]      // (123456789 / 100) ==> 1234567 % 10 ==> 나머지 7
+123456789[3]      // (123456789 / 1000) ==> 123456 % 10 ==> 나머지 6
+
+// Int값에 요청된 자릿수가 넘어간 경우 0 반환
+746381295[9]     // 0
+```
+6. 새로운 중첩 타입 정의 및 사용(Nested Types)
+    - ex) 클래스 안에 클래스, 구조체 등을 만들 수 있음. 이걸 중첩타입이라 함
+```swift
+// 예시 1
+extension Int {
+    enum Kind {
+        case negative, zero, positive
+    }
+
+    var kind: Kind {
+        switch self {
+        case 0:
+            return kind.zero
+        case let x where x > 0:
+            return kind.positive
+        default:
+            return kind.negative
+        }
+    }
+}
+
+// 예시 2
+func printIntegerKinds(_ numbers: [Int]) {
+    for number in numbers {
+        switch number.kind {
+        case .negative:
+            print("- ", terminator: "")
+        case .zero:
+            print("0 ", terminator: "")
+        case .positive:
+            print("+ ", terminator: "")
+        }
+    }
+    print("")
+}
+
+printIntegerKinds([3, 19, -27, 0, -6, 0, 7])      // + + - 0 - 0 +
+```
 7. 프로토콜 채택 및 프로토콜 관련 메서드
     - 프로토콜에 대한 확장도 가능
