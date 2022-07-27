@@ -285,3 +285,39 @@ class BClass: BProtocol {
     }
 }
 ```
+5. 서브 스크립트
+    - get, set 키워드를 통해서 읽기, 쓰기 여부를 결정한다.
+    - get => 최소한 읽기 서브 스크립트 구현, set도 추가 가능하다.
+    - get/set => 반드시 읽기, 쓰기 둘 다 구현해야 함
+```swift
+protocol DataList {
+    subscript(idx: Int) -> Int { get }
+}
+
+struct DataStructure: DataList {
+    // get만 요구해서 set도 구현할 수 있음
+    subscript (idx: Int) -> Int {
+        get {
+            return 0
+        }
+    }
+}
+```
+6. 확장
+```swift
+protocol Certificate {
+    func doSomething()
+}
+
+class Person { 
+
+}
+
+// 관습적으로 본체보다는 확장에서 프로토콜을 구현한다.
+// 그래야 코드가 깔끔해진다.
+extension Person: Certificate {
+    func doSomething() {
+        print("DO SOMETHING FUNCTION")
+    }
+}
+```
