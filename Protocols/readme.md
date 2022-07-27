@@ -133,7 +133,7 @@ class MyClass: FamilyClass, MyProtocol {
     - 저장 속성, 계산 속성 모두 가능하다.
 ```swift
 protocol RemoteMouse {
-    // var, 읽기 계산속성, 읽기, 쓰기 계산속성
+    // let, var, 읽기 계산속성, 읽기, 쓰기 계산속성
     var id: String { get }
 
     // var, 읽기, 쓰기 저장속성
@@ -149,5 +149,139 @@ struct TV: RemoteMouse {
     var name: String = "Samsung TV"
 
     static var type: String = "리모콘"
+}
+```
+3. 메서드의 요구사항 정의
+    - 메서드의 헤드 부분(in/out)의 형태만 요구사항으로 정의
+    - mutating 키워드 => 구조체로 제한하지 않음. 구조체도 채택 가능하다는 의미.
+    - 타입 메서드로 제한 => static 키워드를 붙이면 됨.
+        - 구현하려는 쪽에서 static, class 모두 사용 가능하다 !
+```swift
+// 예시 1
+protocol RandomNumber {
+    static func reset()
+    func random() -> Int
+    // mutating func doSomething()
+}
+
+// 클래스 예시
+class Number: RandomNumber {
+    static func reset() {
+        print("리셋")
+    }
+
+    func random() -> Int {
+        return Int.random(in: 1...100)
+    }
+}
+
+// 구조체 예시
+struct Number: RandomNumber {
+
+    var num = 0
+
+    static func reset() {
+        print("리셋")
+    }
+
+    mutating func doSomething() {
+        self.num = num
+    }
+}
+
+// 예시 2
+protocol Togglable {
+    mutating func toggle()
+}
+
+// 열거형(구조체) 예시
+enum OnOffSwitch: Toggable {
+    case on
+    case off
+
+    mutating func toggle() {
+        switch self {
+        case .off:
+            self = .on
+        case .on:
+            self = .off
+        }
+    }
+}
+
+// 클래스 예시
+class BigSwitch: Togglable {
+    var isOn = false
+
+    func toggle() {
+        isOn = isOn ? false : true
+    }
+}
+```
+4. 생성자 요구사항
+    - 클래스는 생성자 앞에 required를 붙여 하위에서 구현을 강제해야 한다.
+        - 구조체의 경우 상속이 없기 때문에, required는 필요없다.
+    - 혹은 final을 붙여 상속을 막는다면 required를 생략할 수 있다.
+    - 클래스에서 반드시 지정 생성자로 구현할 필요 없다 => 편의 생성자로 구현 가능하다.
+    - 실패 가능, 불가능 생성자의 경우에는 다음과 같다.
+        - init?() => init(), init?(), init!()로 구현한다.
+        - init() => init?()로 구현할 수 없다. 범위가 넓어지면 안됨.
+```swift
+protocol SomeProtocol {
+    init(num: Int)
+}
+
+// 예시 1
+class SomeClass: SomeProtocol {
+    required init(num: Int) { // required convenience init도 가능함. 위에서 3번째 확인.
+        // 구현
+    }
+}
+
+class SomeSubClass: SomeClass {
+    // 하위 클래스에서 생성자 구현하지 않으면 필수 생성자는 자동 상속
+
+    // required init(num: Int) => 이미 구현되어 있음
+}
+
+protocol AProtocol {
+    init()
+}
+
+// 예시 2
+class ASuperClass {
+    init() {
+        // 구현
+    }
+}
+
+class ASubClass: ASuperClass, AProtocol {
+    // AProtocol 채택하므로 required 필요, 상속으로 인한 override도 필요함
+    required override init() {
+        // 구현
+    }
+}
+
+// 실패 가능 생성자 예시
+protocol BProtocol {
+    init?(num: Int)
+}
+
+// 구조체 예시
+struct BStruct: BProtocol {
+    // 구조체에선 required 필요 X
+    
+    // init?(num: Int) { }
+    init(num: Int) { }
+    // init!(num: Int) { }
+
+    // 위 내용 다 가능하다 !
+}
+
+// 클래스 예시
+class BClass: BProtocol {
+    required init(num: Int) { 
+        // 구현
+    }
 }
 ```
