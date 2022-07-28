@@ -321,3 +321,153 @@ extension Person: Certificate {
     }
 }
 ```
+
+## 타입으로써의 프로토콜
+1. 프로토콜은 타입이다.
+    - 프로토콜을 변수에 할당할 수 있음
+    - 함수를 호출할 때, 프로토콜을 파라미터로 전달할 수 있음
+    - 함수에서 프로토콜을 반환할 수 있음
+    - 프로토콜은 일급 객체(First class citizen)이므로 타입(형식)으로 사용할 수 있음
+```swift
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+class TV: Remote {
+    func turnOn() {
+        print("TV ON")
+    }
+
+    func turnOff() {
+        print("TV OFF")
+    }
+}
+
+struct SetTopBox: Remote {
+    func turnOn() {
+        print("SETTOPBOX ON")
+    }
+
+    func turnOff() {
+        print("SETTOPBOX OFF")
+    }
+
+    func doNetflix() {
+        print("NETFLIX ON")
+    }
+}
+
+// 프로토콜 타입인 Remote로 가능하다.
+let tv: Remote = TV() 
+let sbox: SetTopBox = SetTopBox() // 단, Remote 타입이 되면 doNetflix를 실행할 수 없음
+(sbox as! SetTopBox).doNetflix()
+```
+2. 프로토콜 타입 취급의 장점
+    - 상속에서 다룬 것처럼 배열에 담을 수 있다.
+```swift
+let electronic: [Remote] = [tv, sbox]
+
+// 켜기, 끄기만 가능하여 타입캐스팅도 필요 없음(단, 위에서 설명했듯 프로토콜의 멤버만 사용가능)
+for item in electronic {
+    item.turnOn()
+}
+
+// 예시 2
+func turnOnSomeElectronics(item: Remote) {
+    item.turnOn()
+}
+
+turnOnSomeElectronics(item: tv)
+turnOnSomeElectronics(item: sbox)
+```
+3. 프로토콜 준수성 검사
+    - is, as 연산자 사용 가능
+    - is => 특정 타입이 프로토콜을 채택하고 있는지 확인
+    - as => 타입 캐스팅(특정 인스턴스 프로토콜로 변환하거나, 프로토콜을 인스턴스 실제형식으로 캐스팅)
+```swift
+// is
+tv is Remote // true
+sbox is Remote // true
+
+// 프로토콜 타입으로 저장된 인스턴스가 더 구체적인 타입인지 확인 가능하다
+electronic[0] is TV // true
+electronic[1] is SetTopBox // true
+
+// as
+// UpCasting
+let newBox = sbox as Remote
+newBox.turnOn()
+newBox.turnOff()
+
+// DownCasting
+let sbox: SetTopBox? = electronic[1] as? SetTopBox
+sbox2?.doNetflix()
+
+// (electronic[1] as? SetTopBox)?.doNetflix()
+```
+
+## 프로토콜의 상속
+1. 프로토콜도 상속이 가능하다.
+    - B, C Protocol이 A Protocol을 상속한다면 B Protocol을 채택하면 A, B를 구현해야 하고.. C는 A, C를 구현해야 한다.
+2. 프로토콜은 다중 상속을 지원한다.
+    - 그리고 프로토콜간 상속도 가능하다.
+```swift
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+protocol AirConRemote {
+    func Up()
+    func Down()
+}
+
+protocol SupetRemoteProtocol: Remote, AirConRemote {
+    // Remote, AirConRemote Protocol의 내용 담겨있음
+    func doSomething()
+}
+
+class HomePot: SuperRemoteProtocol {
+    func turnOn() { }
+    func turnOff() { }
+    func Up() { }
+    func Down() { }
+    func doSomething() { }
+}
+```
+3. 프로토콜을 클래스 전용으로 만들 수 있다.
+    - `AnyObject`는 클래스 전용 프로토콜이다.
+    - 프로토콜에 상속시키면 클래스 전용이 된다.
+```swift
+protocol SomeProtocol: AnyObject {
+    func doSomething()
+}
+
+class AClass: SomeProtocol {
+    func doSomething() {
+        print("DO SOMETHING")
+    }
+}
+```
+4. 프로토콜 합성(Protocol Composition) 문법 존재
+```swift
+protocol Named {
+    var name: String { get }
+}
+
+protocol Aged {
+    var age: Int { get }
+}
+
+// 프로토콜을 다중 상속할 수 있음
+struct Person: Named, Aged {
+    var name: String
+    var age: Int
+}
+
+// 프로토콜을 두개로 병합할 수 있음 => '&' 사용
+func wishHappyBirthday(to celebrator: Named & Aged) {
+    print("Happy Birthday, \(name) ! You're \(age) years old.")
+}
+```
