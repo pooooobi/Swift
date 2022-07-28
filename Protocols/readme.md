@@ -471,3 +471,65 @@ func wishHappyBirthday(to celebrator: Named & Aged) {
     print("Happy Birthday, \(name) ! You're \(age) years old.")
 }
 ```
+
+## 프로토콜의 선택적 요구사항의 구현(Optional Protocol Requirements)
+1. 프로토콜에서 선언한걸 선택적으로 구현할 수 있다.
+    - 어트리뷰트 키워드 사용함.
+    - Objective-C에 해당하는 클래스 전용 프로토콜임(구조체, 열거형 불가)
+        - Objective-C는 구조체와 열거형에서 프로토콜을 지원하지 않음
+    - 따라서, 프로토콜도 @objc로 선언해야 하고, 내부에서 선택형을 @objc optional로 선언해야 한다.
+```swift
+@objc protocol Remote {
+    @objc optional var isOn: Bool { get set }
+    func turnOn()
+    func turnOff()
+    @objc optional func doNetflix()
+}
+
+class TV: Remote {
+    var isOn = false
+
+    func turnOn() { }
+    func turnOff() { }
+}
+```
+
+## 프로토콜의 확장(Protocol Extension)
+1. 프로토콜을 채택할 경우 실제로 구현해야 한다.
+2. 여러 타입에서 채택한다면 반복 구현해야 하는데, 프로토콜 확장을 제공하여 메서드의 디폴트 구현을 제공한다.
+```swift
+extension Remote {
+    // 채택시 해당 메서드
+    func turnOn() { print("리모콘 켜기") }
+    func turnOff() { print("리모콘 끄기") }
+    
+    // 타입에 따른 선택
+    func doAnotherAction() { print("리모콘의 다른 동작") }
+}
+```
+
+## 프로토콜 지향 프로그래밍
+1. 여러개의 프로토콜 채택 가능(다중 상속과 유사하다)
+2. 메모리 구조에 대한 특정 요구사항 없음
+    - 필요한 속성, 메서드만 채택 가능(@objc optional)
+3. 모든 타입에서 채택 가능(밸류 타입도 가능하다.)
+4. 타입으로 사용 가능해서 활용성이 높다.
+5. 따라서 보다 나은 구성과 재사용성을 높일 수 있다.
+6. 프로토콜 지향 프로그래밍을 잘 사용하면 애플이 만들어 놓은 데이터 타입에도 채택하여 활용 가능함.
+
+## 프로토콜 확장의 적용 제한
+1. 프로토콜의 확장에서 where절을 통해 프로토콜 확장의 적용을 제한할 수 있다.
+2. 특정 프로토콜을 채택한 타입에만 확장이 적용되도록 제한한다.
+    - `where Self: 특정 프로토콜`
+```swift
+extension Bluetooth where Self: Remote {
+    func blueOn() { print("블루투스 켜기") }
+    func blueOff() { print("블루투스 끄기") }
+}
+
+// Remote 프로토콜을 채택한 타입만 Bluetooth의 확장이 적용된다.
+// Remote 프로토콜을 채택하지 않으면 Bluetooth 확장 적용 불가
+class SmartPhone: Remote, Bluetooth {
+
+}
+```
