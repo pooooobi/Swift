@@ -196,3 +196,90 @@ multipleClosure {
 
 }
 ```
+8. 클로저의 캡처 현상
+    - 일반적으로 함수 내에서 함수를 실행하고 값을 리턴하는게 일반적이다.
+    - 근데 클로저는 저장할 필요가 있는 값을 캡처하여 값을 저장한다.
+        - 값을 저장하거나 참조를 저장함
+```swift
+var stored = 0
+
+let closure = { (number: Int) -> Int in
+    stored += number
+    return stored
+}
+
+closure(3) // 3
+closure(4) // 7
+closure(5) // 12
+
+stored = 0
+
+closure(5) // 5
+```
+9. escaping, autoclosure 키워드
+    - @escaping
+        - 원칙적으로 함수의 실행이 종료되면 파라미터로 쓰이는 클로저도 제거됨
+        - @escaping 키워드는 클로저를 제거하지 않고 함수에서 탈출시킴(함수 종료 => 클로저 존재)
+        - 따라서 클로저가 함수의 실행흐름(스택 프레임)을 벗어날 수 있도록 함
+    - @autoclosure
+        - 자동으로 클로저를 만들어 주는 역할
+        - 파라미터가 없는 클로저만 가능함
+        - 일반적으로 클로저 형태로 써도 되지만, 번거로울때 사용함
+        - 번거로움을 해결하지만 코드가 명확해지지 않아 사용 지양(애플 공식문서)
+        - 잘 사용하지 않음 !
+        - 기본적으로 non-escaping 특성을 가짐
+```swift
+// @escaping
+
+// 클로저 단순 실행(non-escaping)
+func performEscaping(closure: () -> ()) {
+    print("시작")
+    closure()
+}
+
+performEscaping {
+    print("중간")
+    print("종료")
+}
+
+// 클로저를 외부 변수에 저장
+// 대표적으로 사용하는 곳 => 어떤 함수의 내부에 존재하는 클로저를 외부 변수에 저장, GCD(비동기 코드의 사용)
+var aSavedFunction: () -> () = { print("프린트") }
+
+func performEscaping2(closure: @escaping () -> ()) {
+    aSavedFunction = closure
+}
+
+performEscaping2(closure: { print("다른 프린트") })
+
+// GCD 비동기 코드
+
+func performEscaping3(closure: @escaping (String) -> ()) {
+    var name = "이름"
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // 1초 뒤 실행
+        closure(name)
+    }
+}
+
+performEscaping3 { str in
+    print("이름 출력: \(name)")
+}
+
+// @autoclosure
+
+func someFunction(closure: @autoclosure () -> Bool) {
+    if closure() {
+        print("TRUE")
+    } else {
+        print("FALSE")
+    }
+}
+
+// @autoclosure, @escaping
+func someAutoClosure(closure: @autoclosure @escaping () -> String) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        print("3초 뒤 실행되는 프린트문")
+    }
+}
+```
