@@ -91,3 +91,108 @@ closureFunction(closure: { () -> () in
     print("프린트 종료")
 })
 ```
+6. 클로저의 문법 최적화
+    - 문맥상에서 파라미터와 리턴밸류 타입 추론(Type Inference)
+    - 싱글 익스텐션(코드가 한줄인 경우), 리턴을 적지 않아도 됨(Implicit Return)
+    - 아규먼트 이름을 축약(Shortand Arguments) => $0, $1
+    - 트레일링 클로저 문법(Trailing Closure)
+        - 함수의 마지막 전달인자(아규먼트)로 클로저를 전달하는 경우 소괄호를 생략
+```swift
+// 함수 정의
+func closureParamFunction(closure: () -> Void) {
+    print("시작")
+    closure()
+}
+
+// 함수 실행시 클로저 형태로 전달
+// 마지막 전달인자(아규먼트)로 클로저 전달되는 경우 소괄호 생략 가능
+
+// 원래의 형태
+closureParamFunction(closure: { 
+    print("종료")
+})
+
+// 소괄호를 앞으로
+closureParamFunction(closure: ) {
+    print("종료")
+}
+
+// 아규먼트 생략(후행 클로저 문법)
+closureParamFunction() {
+    print("종료")
+}
+
+// 예시
+func closureCaseFunction(a: Int, b: Int, closure: (Int) -> Void) {
+    let c = a + b
+    closure(c)
+}
+
+closureCaseFunction(a: 5, b: 2) { number in
+    print("결과: \(number)")
+}
+
+
+// 파라미터 및 생략 등의 간소화
+func performClosure(param: (String) -> Int) {
+    param("Swift")
+}
+
+performClosure(param: { (str: String) in 
+    return str.count
+})
+
+// 위를 아래와 같이 변경한다.
+// 타입 추론
+performClosure(param: { str in
+    return str.count
+})
+
+// 한줄인 경우 리턴 필요없음(Implicit Return)
+performClosure(param: { str in 
+    str.count
+})
+
+// 아규먼트 이름 축약(Shortand Arguments)
+// $0 => 1번째 파라미터, $1 => 2번째 파라미터, ..., $999 => 1000번째 파라미터, ...
+performClosure(param: {
+    $0.count
+})
+
+// 트레일링 클로저
+performClosure() {
+    $0.count
+}
+
+// 이와 같이 줄이기도 가능함
+performClosure { $0.count }
+```
+7. 멀티플 트레일링 클로저
+    - 기존 트레일링 클로저에서 여러 함수를 받아야 할 때 사용된다.
+    - 트레일링 클로저보다 축약되며, Swift 5.3 이상 지원된다.
+    - XCode에서 자동 지원함 !
+```swift
+func multipleClosure(first: () -> (), second: () -> (), third: () -> ()) {
+    first()
+    second()
+    third()
+}
+
+// 기존
+multipleClosure(first: {
+
+}, second: {
+
+}, third: {
+
+})
+
+// 멀티플 트레일링 클로저
+multipleClosure {
+
+} second: {
+
+} third: {
+
+}
+```
