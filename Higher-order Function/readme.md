@@ -73,3 +73,50 @@ var result = numbersArray.filter { $0 % 2 != 0 }
 // 1, 9, 25, 49, 81 => 165
 print(result) // 165
 ```
+
+## forEach Function
+- foreach : 각각의
+- 기존 배열 등의 각 아이템을 활용하여 특정 작업을 실행한다.
+```swift
+let immutableArray = [1, 2, 3, 4, 5]
+
+// 배열의 아이템을 각각 프린트함
+immutableArray.forEach { num in
+    print(num)
+}
+
+// 축약
+immutableArray.forEach { print("숫자 : \($0)") }
+```
+
+## compactMap Function
+- 기존 배열 등의 각 아이템을 새롭게 매핑하여 변형하되, 옵셔널 요소를 제거하고 새로운 배열을 리턴한다.
+- 자동으로 옵셔널 형식을 제거한다 !! (자동으로 옵셔널 바인딩의 기능이 내장되어 있다)
+```swift
+// 예시 1
+let stringArray: [String?] = ["A", nil, "B", nil, "C"]
+
+var newStringArray = stringArray.compactMap { $0 } // ["A", "B", "C"]
+print(newStringArray)
+
+// 예시 2(filter로도 가능)
+let numbers = [-2, -1, 0, 1, 2]
+
+var positiveNumbers = numbers.compactMap { $0 >= 0 ? $0 : nil}
+print(positiveNumbers)
+
+// compactMap의 구현
+newStringArray = stringArray.filter { $0 != nil }.map { $0! }
+```
+
+## flatMap Function
+- 중첩된 배열의 각 배열을 새롭게 매핑하여 내부 중첩된 배열을 제거하고 리턴한다.
+```swift
+// 예시 1
+var nestedArray = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+nestedArray.flatMap { $0 }
+
+// 예시 2
+var newNestedArray = [[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[10, 11], [12, 13, 14]]
+var numbersArray = newNestedArray.flatMap { $0 }.flatMap { $0 } // 2회 사용으로 완전 제거
+```
