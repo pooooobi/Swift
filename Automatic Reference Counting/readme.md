@@ -70,3 +70,128 @@ var bori: Dog? = Dog(name: "보리", weight: 10.0) // retain(bori), RC = 1
 choco = nil // release(choco), RC = 0 => 초코 메모리 해제
 bori = nil // release(bori), RC = 0 => 보리 매모리 해제
 ```
+- 강한 참조 사이클(Strong Reference Cycle & 메모리 누수에 대한 이해)
+```swift
+class Dog {
+    var name: String
+    var owner: Person?
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+class Person {
+    var name: String
+    var pet: Dog?
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+var bori: Dog? = Dog(name: "보리") // Dog RC = 1
+var gildong: Person? = Person(name: "홍길동") // Person RC = 1
+
+bori?.owner = gildong // Person RC = 2
+gildong?.pet = bori // Dog RC = 2
+
+bori = nil // Dog RC = 1
+gildong = nil // Person RC = 1
+```
+- 위와 같은 상황에서 메모리 누수가 발생한다. 해결 방안은?
+    - bori, gildong에 nil을 부여하기 전에 `bori?.owner = nil`, `gildong?.pet = nil`을 적용해주어야 한다.
+- 객체가 서로를 참조하는 `강한 참조 사이클`로 인해 변수의 참조에 nil을 할당해도 메모리가 해제되지 않는 메모리 누수의 상황이 발생하게 되는 것이다.
+- 따라서, RC(Reference Counting)를 고려하여 참조 해제 순서를 주의해서 코드를 작성해야 한다. 아래와 같은 방법을 사용하자.
+    - Weak Reference(약한 참조)
+        - 소유자에 비해 보다 짧은 생명주기를 가진 인스턴스를 참조할때 주로 사용함
+        - 참조하고 있던 인스턴스가 사라지면 nil로 초기화 됨
+        - 실제 프로젝트에서 주로 사용함
+        - let으로 불가, Non-Optional 불가 => 변할 수 있어야하며 nil도 할당할 수 있어야 한다.
+    - Unowned Reference(비소유 참조)
+        - 소유자 보다 인스턴스의 생명주기가 더 길거나, 같은 경우에 사용함
+        - 참조하고 있던 인스턴스가 사라지면 nil로 초기화 되지 않음
+        - 따라서, nil처리가 필요하다 !
+    - 둘 다 가르키는 인스턴스의 RC의 숫자를 올라가지 않게 한다.
+```swift
+// 약한 참조(Weak Reference)
+class Dog {
+    var name: String
+    weak var owner: Person?
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+class Person {
+    var name: String
+    weak var pet: Dog?
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+
+var bori: Dog? = Dog(name: "보리") // Dog RC = 1
+var gildong: Person? = Person(name: "홍길동") // Person RC = 1
+
+bori?.owner = gildong // RC 변화 없음
+gildong?.pet = bori // RC 변화 없음
+
+bori = nil // Dog RC = 0, 메모리 해제
+gildong = nil // Person RC = 0, 메모리 해제
+
+// 비소유 참조(Unowned Reference)
+class Dog1 {
+    var name: String
+    unowned var owner: Person1? // Swift 5.3 이전에는 Optional에 unowned에 선언이 안되었음
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+class Person1 {
+    var name: String
+    unowned var pet: Dog1?
+
+    init(name: String) {
+        self.name = name
+    }
+
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+var bori1: Dog1? = Dog1(name: "보리") // Dog RC = 1
+var gildong1: Person1? = Person1(name: "홍길동") // Person RC = 1
+
+bori1?.owner = gildong1 // RC 변화 없음
+gildong1?.pet = bori1 // RC 변화 없음
+
+bori1 = nil // Dog RC = 0, 메모리 해제
+gildong1 = nil // Person RC = 0, 메모리 해제
+```
