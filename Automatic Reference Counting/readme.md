@@ -253,3 +253,31 @@ let refTypeCapture2 = { [unowned z] in
 
 // 캡처리스트 안에서 바인딩도 가능
 ```
+- 메모리 누수의 사례(강한 참조 사이클)
+```swift
+class Dog {
+    var name = "초코"
+
+    var run: (() -> Void)?
+
+    func walk() {
+        print("\(self.name)가 걷는다.")
+    }
+
+    func saveClosure() {
+        run = {
+            print("\(self.name)가 뛴다.")
+        }
+    }
+
+    deinit {
+        print("\(self.name) 메모리 해제")
+    }
+}
+
+func doSomething() {
+    let choco: Dog? = Dog()
+    // choco?.saveClosure() => 강한 참조 사이클 발생
+}
+// 해결방안은? saveClosure()에서 [weak self]로 약한 참조로 만들면 된다.
+```
