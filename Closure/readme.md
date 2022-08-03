@@ -283,3 +283,53 @@ func someAutoClosure(closure: @autoclosure @escaping () -> String) {
     }
 }
 ```
+10. 객체 내에서 클로저의 사용
+- 클로저 내에서 객체의 속성 및 메서드에 접근하는 경우 self 키워드를 반드시 사용해야 한다.
+    - 강한 참조를 하고 있다는 것을 표시하기 위한 목적이고, Dog의 RC를 올리는 역할을 한다.
+```swift
+class Dog { 
+    var name = "초코"
+
+    func doSomething() {
+        // 비동기적으로 실행하는 클로저
+        // 해당 클로저는 오래 저장할 필요가 있음 => 새로운 스택을 만들어 실행하기 때문
+        DispatchQueue.global().async { // 다른 CPU에 작업을 요청
+            print("제 이름은 \(self.name) 입니다.")
+        }
+    }
+}
+
+var Choco = Dog()
+choco.doSomething()
+```
+- 클로저는 기본적으로 캡처 현상이 발생한다.
+- 클로저와 인스턴스가 강한참조로 서로를 가르키고 있다면, 메모리에서 정상적으로 해제되지 않고 메모리 누수현상이 발생한다.
+- 캡처리스트 내에서 약한 참조 또는 비소유 참조를 선언하여 문제를 해결할 수 있다.
+```swift
+class Person {
+    let name = "홍길동"
+
+    func sayMyName() {
+        print("나의 이름은 \(name) 입니다.")
+    }
+
+    func sayMyName1() {
+        DispatchQueue.global().async {
+            print("나의 이름은 \(self.name) 입니다.")
+        }
+    }
+
+    func sayMyName2() {
+        DispatchQueue.global().async { [weak self] in
+            print("나의 이름은 \(self?.name) 입니다.")
+        }
+    }
+
+    func sayMyName3() {
+        DispatchQueue.global().async { [weak self] in
+            guard let weakSelf = self else { return }
+            print("나의 이름은 \(weakSelf.name) 입니다.") // Guard 문
+        }
+    }
+}
+```
