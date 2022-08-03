@@ -195,3 +195,61 @@ gildong1?.pet = bori1 // RC 변화 없음
 bori1 = nil // Dog RC = 0, 메모리 해제
 gildong1 = nil // Person RC = 0, 메모리 해제
 ```
+- 클로저에서 강한 참조 사이클을 어떻게 해결할 수 있을까? => 캡처 리스트와 관련
+    - 캡처 현상에 관한 내용은 Closure 폴더의 readme.md 파일을 확인하자.
+```swift
+// value 타입의 캡처
+var num = 1
+let valueCaptureClosure = {
+    print("밸류 출력(캡처) : \(num)")
+}
+
+num = 7
+valueCaptureClosure() // 7 출력
+
+num = 1
+valueCaptureClosure() // 1 출력
+```
+- 스택 프레임에서 num이 변하고, valueCaptureClosure는 클로저의 주소를 가르킨다.
+    - 반대로 클로저는 num을 스택 프레임에 있는 num의 주소를 가르킨다.
+- 캡처리스트는 어떻게 사용할까 ?
+```swift
+let valueCaptureListClosure = { [num] in
+    print("밸류 출력(캡처리스트) : \(num)")
+}
+```
+- 클로저(힙에 있는)는 num의 값을 가져와 보관하게 된다.
+    - 메모리 주소를 보관하지 않는다. 값을 직접적으로 복사해서 사용한다.
+        - 캡처 => 주소를 보관, 캡처리스트 => 값을 복사하여 보관
+- 참조(Reference) 타입의 캡쳐와 캡쳐리스트는?
+```swift
+class SomeClass {
+    var num = 0
+}
+
+var x = SomeClass()
+var y = SomeClass()
+
+print("참조 초기값 : ", x.num, y.num)
+
+let refTypeCapture = { [x] in 
+    print("참조 출력값(캡처리스트) : ", x.num, y.num)
+}
+```
+- x => 참조타입 주소값 캡처, x를 직접 참조로 가르킴
+- y => 변수를 캡처해서, y 변수를 가르킴
+- 해결 방안은?
+```swift
+// 캡처리스트 안에서 weak/unowned 사용
+var s = SomeClass()
+
+let captureCapture1 = { [weak z] in
+    print("참조 출력값 : ", z?.num) // Optional => ? 붙여야 함
+}
+
+let refTypeCapture2 = { [unowned z] in
+    print("참조 출력값 : ", z.num)
+}
+
+// 캡처리스트 안에서 바인딩도 가능
+```
