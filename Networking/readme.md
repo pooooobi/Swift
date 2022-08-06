@@ -66,3 +66,118 @@ func parseJSON(_ movieData: Data) -> [DailyBoxOfficeList]? {
 }
 ```
 - 유용한 사이트(JSON) : https://app.quicktype.io/
+
+- 보기 좋은 코드로 변환
+```swift
+// 서버에서 주는 데이터
+struct MovieData: Codable {
+    let boxOfficeResult: BoxOfficeResult
+}
+
+struct BoxOfficeResult: Codable {
+    let dailyBoxOfficeList: [DailyBoxOfficeList]
+}
+
+struct DailyBoxOfficeList: Codable {
+    let rank: String
+    let moveNm: String
+    let audiCnt: String
+    let audiAcc: String
+    let openDt: String
+}
+
+// 사용하려는 데이터
+struct Movie {
+    static var movieId: Int = 0
+    let movieName: String
+    let rank: Int
+    let openDate: String
+    let todayAudience: Int
+    let totalAudience: Int
+
+    init(movieNm: String, rank: String, openDate: String, audiCnt: String, accAudi: String) {
+        self.movieName = movieNm
+        self.rank = Int(rank)!
+        self.openDate = openDate
+        self.todayAudience = Int(audiCnt)!
+        self.totalAudience = Int(accAudi)!
+        Movie.movieId += 1
+    }
+}
+
+// 서버 통신
+struct MovieDataManager {
+    let movieURL = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key="
+
+    let keyValue = ""
+
+    func fetchMovie(date: String, completion: @escaping ([Movie]?) -> Void) {
+        let urlString = "\(movieURL)&key=\(keyValue)&targetDt=\(date)"
+        performRequest(with: urlString) { movies in
+            completion(movies)
+        }
+    }
+
+    func performRequest(with urlString: String, completion: @escaping ([Movie]?) -> Void) {
+        // URL 생성
+        guard let url = URL(string: urlString) else { return }
+
+        // URL Session 생성
+        let session = URLSession(configuration: .default) // 혹은 .shared
+
+        // 세션에 작업 무여
+        let task = session.dataTask(with: url) { (data, response, error) in 
+            if error != nil {
+                print(error!)
+                completion(nil)
+                return
+            }
+
+            guard let resData = data else {
+                completion(nil)
+                return
+            }
+
+            if let movies = self.parseJSON(resData) {
+                completion(movies)
+            } else {
+                completion(nil)
+            }
+        }
+        // 작업 실행
+        task.resume()
+    }
+
+    func parseJSON(_ movieData: Data) -> [Movie]? {
+        let decoder = JSONDecoder()
+
+        do {
+            let decodedData = try decoder.decode(MovieData.self, from: movieData)
+            let dailyLists = decodedData.boxOfficeResult.dailyBoxOfficeList
+
+            let myMovieLists = dailyLists.map {
+                Movie(movieNm: $0.movieNm, rank: $0.rank, openData: $0.openDt, audiCnt: $0.audiCnt, accAudi: $0.audiAcc)
+            }
+
+            return myMovieLists
+        } catch {
+            print("파싱 오류")
+            return nil
+        }
+    }
+}
+
+// 실제 사용
+var downloadedMovies = [Movie]()
+
+let movieManager = MovieDataManager()
+
+movieManager.fatchMovie(date: "20220806") { (movies) in
+    if let movies = movies {
+        downloadedMovies = movies
+        dump(downloadedMovies)
+    } else {
+        print("데이터가 존재하지 않거나 다운로드에 실패했습니다.")
+    }
+}
+```
