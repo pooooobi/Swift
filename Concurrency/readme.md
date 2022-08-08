@@ -91,6 +91,9 @@ serialQueue.async {
         - GCD 코드를 사용할 경우 작업을 바로 배치하고 반환되기 때문에, return 타입이 있는 함수를 사용하면 안된다.
             - 데이터를 리턴으로 전달하면 안되고, 클로저로 전달해야 함.
                 - `@escaping (data name) -> Void`
+    - weak, strong 캡처의 주의
+        - 일반적으로 비동기 코드는 객체 내에서 사용하게 될 일이 많은데 self를 자주 사용한다.
+        - 따라서, 강한참조의 경우 주의해서 사용해야 한다.
 
 ```swift
 // 반드시 메인큐에서 처리해야 하는 작업
@@ -147,5 +150,72 @@ propertyGetImages(with: "url 주소") {
         // 예시
         imageView?.image = photoImage
     }
+}
+
+// weak, strong 캡처의 주의
+class ViewController: UIViewController {
+    
+    var name: String = "뷰컨"
+    
+    func doSomething() {
+        DispatchQueue.global().async {
+            sleep(3)
+            print("글로벌큐에서 출력하기: \(self.name)")
+        }
+    }
+    
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+
+func localScopeFunction() {
+    let vc = ViewController()
+    vc.doSomething()
+}
+// 강한 참조를 하기 때문에 3초간 붙잡힌 뒤 해제됨
+// 뷰 컨트롤러가 사라져도 출력함.
+
+// 약한 참조
+class ViewController1: UIViewController {
+    
+    var name: String = "뷰컨"
+    
+    func doSomething() {
+        // 강한 참조 사이클이 일어나지 않지만, 굳이 뷰컨트롤러를 길게 잡아둘 필요가 없다면
+        // weak self로 선언
+        DispatchQueue.global().async { [weak self] in
+            guard let weakSelf = self else { return } // return 되어 밑부분 출력 안됨
+            sleep(3)
+            print("글로벌큐에서 출력하기: \(weakSelf.name)")
+        }
+    }
+    
+    deinit {
+        print("\(name) 메모리 해제")
+    }
+}
+
+
+func localScopeFunction1() {
+    let vc = ViewController1()
+    vc.doSomething()
+}
+
+localScopeFunction1()
+```
+7. async, await의 도입
+    - 비동기 함수를 사용할 경우 return 타입으로 사용하면 안된다. 즉시 반환되기 때문에..
+    - 많은 비동기 함수가 있을 경우 `}`가 늘어나 코드 가독성이 떨어져 async, await(JS) 개념이 도입되었다 => Swift 5.5 이후
+    - 따라서, 해당 코드를 사용하면 리턴 타입의 함수를 사용할 수 있다. 코드의 가독성도 증가한다.
+    - 큐에 배치되어 쓰레드별로 작업이 배치되더라도 작업이 끝나야 다음 작업이 실행된다.
+    - 콜백함수를 들여쓰기 할 필요 없이 반환 시점을 기다릴 수 있고, 깔끔한 코드 처리가 가능하다.
+```swift
+func processImageData() async throws -> Image {
+    // 내부 코드
+    // ex
+    let imageResult = try await dewarpAndCleanupImage(imageTmp)
+    return imageResult
 }
 ```
