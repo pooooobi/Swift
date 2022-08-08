@@ -219,3 +219,34 @@ func processImageData() async throws -> Image {
     return imageResult
 }
 ```
+8. 동시성 프로그래밍과 관련된 문제점
+    - 경쟁상황, 경쟁조건(Race Condition)
+        - 1번 쓰레드에서 작업을 배치시켜 2, 3번 쓰레드에서 작업을 진행한다고 치면, 동시에 접근하는 상황을 말한다.
+            - ex) 2번 쓰레드 => 변수 변경, 3번 쓰레드 => 변수 읽기
+        - 따라서, Thread-safe 하지 않아 경쟁상황(Race Condition)이라 함.
+    - 교착상대, 데드락(DeadLock)
+        - 2개 이상의 쓰레드가 서로 베터작인 메모리의 사용으로 인해(서로 잠그고 점유하려고) 메서드의 작업이 종료도 못하고 일의 진행이 멈춰버리는 상태
+9. 동시성 프로그래밍 문제점의 해결 방법
+    - 도중에 serial queue로 보내는 방법이 있다.
+    - 아래 코드는 array에 들어가는 순서는 다르지만, 실제 thread-safe하여 모든 숫자가 들어간다.
+```swift
+var array = [String]()
+
+let serialQueue = DispatchQueue(label: "serial")
+
+for i in 1...20 {
+    DispatchQueue.global().async {
+        print(i)
+        // array.append("\(i)")
+
+        serialQueue.async { // 올바른 처리방법
+            array.append("\(i)")
+        }
+    }
+}
+
+// 5초 뒤 프린트 하는 코드
+DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+    print(array)
+}
+```
