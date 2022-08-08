@@ -250,3 +250,11 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
     print(array)
 }
 ```
+
+# 참고(UI 업데이트)
+1. UIKit의 모든 속성을 Thread-safe 하게 설계하면, 느려짐과 같은 성능저하가 발생하기 때문에 그렇게 설계할 수 없다.
+    - 따라서 개발자가 해당 상황에서 Thread-safe 하게 개발하면 된다.
+2. 메인 런루프(runloop)가 뷰의 업데이트를 관리하는 View Drawing Cycle을 통해 뷰를 동시에 업데이트 하는 그런 설계를 통해 동작하고 있는데, 메인 쓰레드가 아닌 백그라운드 쓰레드가 각자의 런루프로 그런 동작을 하게 된다면 뷰가 제멋대로 동작한다.
+3. iOS가 그림을 그리는 렌더링 프로세스(Core animation -> 렌더 서버 -> GPU -> out)가 있는데, 여러 쓰레드에서 각자의 뷰의 변경사항을 GPU로 보내면 GPU는 각각의 정보를 다 해석해야 하니 느려지거나 비효율적으로 변한다.
+4. Texture나 ComponentKit이라는 페이스북에서 개발한 비동기적 UI Framework가 있으나, 그조차도 View Drawing Cycle이 유사한 방식으로 적절한 타이밍에 메인 쓰레드에서 동시에 업데이트 하도록 하고 있다.
+5. 즉, iOS 뿐 아니라 다른 OS에서도 위와 유사한 이유들 때문에 UI update는 메인 쓰레드에서 이루어지도록 하고 있다.
