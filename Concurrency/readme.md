@@ -26,7 +26,6 @@
     - 분산처리를 하려면 Concurrent Queue가 좋아보이는데 Serial Queue는 언제 사용하나요 ?
         - Serial Queue는 순서가 중요한 작업에서 사용하고, Concurrent Queue는 독립적이지만 유사한 여러개의 작업을 처리할 때 사용한다.
 4. `DispatchQueue` 사용 예시
-
 - Concurrent Queue(동시)
 ```swift
 // 정의
@@ -56,5 +55,97 @@ let serialQueue = DispatchQueue(label: "serial") // 라벨은 어플리케이션
 
 serialQueue.async {
     // 세부 코드
+}
+```
+5. GCD의 개념 및 종류
+    - DispatchQueue(GCD)
+        - Main Queue: DispatchQueue.main
+            - 유일한 한개, 직렬, 실제로는 메인 쓰레드를 가르킴
+        - Global Queue: DispatchQueue.global()
+            - 종류가 여러개고, 기본설정 동시(Concurrent), QoS(서비스 품질) 6종류를 가짐(아래에서 확인)
+            - 주로 default queue, utility queue 사용
+        - Private Queue: DispatchQueue(label: "...")
+    - OperationQueue
+        - Main Queue: OperationQueue.main
+        - Private Queue: OperationQueue()
+    - 큐의 QoS(Quality of Serive)
+        - iOS가 알아서 우선적으로 중요한 일임을 인지하고, 쓰레드에 우선순위를 매겨 더 많은 쓰레드를 배치하고 CPU의 배터리를 더 집중해서 사용하도록 하여 일을 빨리 끝내도록 하는 개념
+
+서비스품질 수준 | 사용 상황 | 소요 시간
+:--|:--| :-- 
+.userInteractive | 유저와 직접적 인터렉티브 관련 기능(UI 업데이트, 직접적 X / 애니메이션 / UI 관련 반응) | 거의 즉시
+.userInitiated | 유저가 즉시 필요하지만 비동기적으로 처리된 작업 | 몇초
+.default | 일반적인 작업 | -
+.utility | 보통 Progress Indicator(I/O, Networking, 지속적인 데이터 feeds)와 함께 길게 실행되는 작업 및 계산 | 몇초 ~ 몇분
+.background | 유저가 직접적으로 인지하지 않고(시간이 중요하지 않은) 작업 | 몇분 이상(속도보다 에너지 효율성 중시)
+.unspecified | legacy API 지원(쓰레드를 서비스 품질에서 제외) | -
+
+6. GCD 사용시 주의해야 할 사항
+    - 반드시 메인큐에서 처리해야 하는 작업
+        - 만약 화면과 관련된(UI Task) 작업의 경우 여러 작업을 다른 쓰레드에서 처리하다가 메인으로 보내야 한다.
+            - `DispatchQueue.main.async { }`
+    - 컴플리션 핸들러의 존재 이유 : 올바른 콜백함수의 사용
+        - (잘못된 함수 설계) 비동기적인 작업을 해야하는 함수를 설계할 때, return을 통해 데이터를 전달하려면 항상 nil이 반환
+        - (제대로된 함수 설계) 비동기적인 작업을 해야하는 함수는 항상 클로저를 호출할 수 있도록 함수를 설계해야 함
+            - @escaping, completion()
+        - GCD 코드를 사용할 경우 작업을 바로 배치하고 반환되기 때문에, return 타입이 있는 함수를 사용하면 안된다.
+            - 데이터를 리턴으로 전달하면 안되고, 클로저로 전달해야 함.
+                - `@escaping (data name) -> Void`
+
+```swift
+// 반드시 메인큐에서 처리해야 하는 작업
+var imageView: UIImageView? = nil
+
+let url = URL(string: "http 주소")!
+
+URLSession.shared.dataTask(with: url) { (data, response, error) in
+    if error != nil {
+        print("ERROR")
+    }
+
+    guard let imageData = data else { return }
+
+    let photoImage = UIImage(data: imageData)
+
+    DispatchQueue.main.async {
+        imageView?.image = photoImage
+    }
+}.resume()
+
+// 혹은
+
+DispatchQueue.global().async {
+    // code
+    DispatchQueue.main.async {
+        // 메인 큐에서 처리해야 하는 작업
+    }
+}
+
+// 올바른 함수의 설계
+func properlyGetImages(with urlString: String, completionHandler: @escaping (UIImage?) -> Void) {
+    let url = URL(string: urlString)!
+
+    var photoImage: UIImage? = nil
+
+    URLSession.shared.dataTask(with: url) { (data, response, error) in 
+        if error != nil {
+            print(error!)
+        }
+
+        guard let imageData = data else { return }
+
+        photoImage = UIImage(data: imageData)
+
+        completionHandler(photoImage)
+    }.resume()
+}
+
+propertyGetImages(with: "url 주소") {
+    DispatchQueue.main.async {
+        // UI 작업 코드
+
+        // 예시
+        imageView?.image = photoImage
+    }
 }
 ```
