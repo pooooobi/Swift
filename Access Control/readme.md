@@ -97,3 +97,98 @@ class SomeAnotherClass {
     private(set) var name = "이름"
 }
 ```
+
+5. 커스텀 타입의 접근 제어
+    - 타입 내부 멤버는 타입 자체의 접근 수준을 넘을 수 없다.
+```swift
+public class SomePublicClass {
+    open var someOpenProperty = "SomeOpen"
+    public var somePublicProperty = "SomePublic"
+    var someInternalProperty = "SomeInternal"
+    fileprivate someFilePrivateProperty = "SOmeFilePrivate"
+    private var somePrivateProperty = "SomePrivate"
+}
+
+// somePrivateProperty를 제외한 모든것에 접근 가능
+
+// 클래스에 키워드가 아무것도 없는(internal, default)것은 open이라 설정해도 internal로 작동함
+
+fileprivate class SomeFilePrivateClass {
+    open var someOpenProperty = "SomeOpen"
+    public var somePublicProperty = "SomePublic"
+    var someInternalProperty = "SomeInternal"
+    var someFilePrivateProperty = "SOmeFilePrivate" // 해당 부분
+    private var somePrivateProperty = "SomePrivate"
+}
+
+// somePrivateProperty를 제외한 모든것에 접근 가능
+// 변수선언(internal) <===> 타입선언(fileprivate)은 불가능 (fileprivate / private 선언가능)
+```
+- 타입 자체를 private로 선언하는 것은 의미가 없다.
+    - fileprivate로 동작하기 때문
+
+6. 내부 멤버의 접근 제어 수준
+    - 내부 멤버가 명시적으로 선언하지 않으면 접근 수준은 `internal`로 유지된다.
+```swift
+open class SomeClass {
+    var someProperty = "SomeInternal" // internal임 -> 클래스와 동일 수준을 유지하려면 명시적으로 open 선언을 해야함
+}
+```
+
+7. 상속과 확장의 접근 제어
+    - 타입 : 상속해서 만든 서브클래스는 상위클래스보다 더 높은 접근 수준을 가질 수 없음
+    - 멤버 : 동일 모듈에서 정의한 클래스의 상위 멤버에 접근 가능하면 접근수준을 올려 재정의 할 수 있음
+```swift
+// 상속 관계의 접근 제어
+public class A {
+    fileprivate func someMethod() { }
+}
+
+internal class B: A {
+    override internal func someMethod() { // 접근 수준을 올려 재정의 가능
+        super.someMethod() // 더 낮아도 모듈에서 접근 가능하기에 호출할 수 있음
+    }
+}
+
+// 확장의 접근 제어
+public class SomeClass {
+    private var somePrivateProperty = "somePrivate"
+}
+
+extension SomeClass {
+    func somePrivateControlFunction() { // public으로 선언한 것과 같음
+        somePrivateProperty = "접근 가능"
+    }
+}
+```
+
+8. 속성과 접근제어
+    - 속성의 읽기 설정(getter)과 쓰기 설정(setter)의 접근 제어
+```swift
+// 저장, 계산 속성의 읽기와 쓰기의 접근 제어 수준을 구분해서 구현 가능
+// 일반적으로 밖에서 쓰는 것(setter)은 불가능하도록 구현하는 경우가 많다
+
+struct TrackedString {
+    private(set) var numberOfEdits = 0
+
+    var value: String = "시작" {
+        didSet {
+            numberOfEdits += 1
+        }
+    }
+}
+
+var stringToEdit = TrackedString()
+stringToEdit.value = "첫설정"
+stringToEdit.value += " 추가하기1"
+stringToEdit.value += " 추가하기2"
+stringToEdit.value += " 추가하기3"
+print("수정한 횟수: \(stringToEdit.numberOfEdits)")
+print(stringToEdit.value)
+```
+- 속성의 읽기 설정과 속성의 쓰기 설정에 대해 각각 명시적으로 선언도 가능
+- 변수 및 속성, 서브스크립트에 쓰기(setter) 수준을 읽기(getter) 수준보다 낮은 접근 수준으로 설정 가능
+- internal private(set) var numberOfEdits = 0 으로 선언한다면
+    - 읽기 설정 : internal
+    - 쓰기 설정 : private(set)
+- 저장, 계산 속성 모두에 설정 가능하다.
