@@ -79,3 +79,36 @@ nsWord.length
 // NSString은 Objective-C에서 사용하는 문자열
 // NSString에서 더 파생된 개념인 NSAttributedString을 실제 앱을 만들때, 간혹가다 사용하는 경우가 있음
 ```
+
+2. 문자열의 기본 다루기
+    - Multiline String Literals
+```swift
+// 문자열을 한줄에 입력 -> 명시적인 줄바꿈이 불가능, 원할경우 문자열 내부에 \n 입력
+let singleLineString = "These are \nthe same."
+
+/* 
+문자열을 여러개 입력하고 싶을 때
+1. """ 입력 -> 첫째줄, 마지막줄
+2. 해당 줄에는 문자열 입력 불가
+3. 문자열 내부에서 쓰여진대로 줄바꿈됨. 줄바끔을 하지 않으려면 \ 입력
+4. 특수문자는 문자 그대로 입력됨
+5. 마지막 """는 들여쓰기의 기준 역할을 함
+*/
+
+let longString = """
+    Hello,
+    "Stranger"
+    """
+```
+- 문자열 내에서 특수 문자(Escape character sequences)
+    - `\0` (null)
+    - `\\` (백슬래시)
+    - `\t` (탭)
+    - `\n` (줄바꿈)
+    - `\r` (캐리지 패턴, 앞줄 이동)
+    - `\"` (쌍따옴표)
+    - `\'` (작은따옴표)
+    - `\u` (유니코드 값)
+- 로스트링(Raw String) -> 확장 구분자 (Extended String Delimiters) #
+    - `#` 기호로 문자열 앞 뒤를 감싸면 내부의 문자열을 글자 그대로 인식한다.
+    - Escape sequence: \# (#의 개수는 앞 뒤의 개수에 따라 변경)
