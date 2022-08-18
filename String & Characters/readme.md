@@ -184,3 +184,44 @@ print("\(p, style: .scientific)") // X 좌표는 5E0, Y 좌표는 7E0
 
 // 자세한건 enum Style: UInt { }를 확인하자.
 ```
+
+4. 숫자(정수 및 실수) 등을 문자열로 변환하여 출력하려고 할 때
+```swift
+var pi = 3.1415926
+print("pi의 값 : \(pi)")
+```
+- 만약 위 내용에서 3.14의 값이 필요하다면?
+    - 출력 형식 지정자(Format Specifiers)
+```swift
+var string: String = ""
+string = String(3.1415926)
+print(string) // 3.1415926
+
+string = "원하는 숫자는 " + String(format: "%.3f", pi) // 반올림
+print(string) // 원하는 숫자는 3.142
+
+string = "원하는 숫자는 " + String(format: "%.2f", pi)
+print(string) // 원하는 숫자는 3.14
+
+/*
+    출력 형식 지정자의 종류
+    %d, %D => 정수
+    %2d => 두자리 표현
+    %02d => 두자리로 표현, 0 포함
+    %07.3f => 7자리로 표현하되 0, .(dot) 포함, 소숫점 아래 3자리
+    %@ => 문자열
+*/
+
+// 활용 예시
+struct Point: Codable {
+    var x: Double
+    var y: Double
+}
+
+extension Point: CustomStringconvertible {
+    var description: String {
+        let formattedValue = String(format: "$1$.2f, %2$.2f", self.x, self.y)
+        return "\(formattedValue)"
+    }
+}
+```
