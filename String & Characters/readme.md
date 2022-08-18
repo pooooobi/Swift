@@ -112,3 +112,75 @@ let longString = """
 - 로스트링(Raw String) -> 확장 구분자 (Extended String Delimiters) #
     - `#` 기호로 문자열 앞 뒤를 감싸면 내부의 문자열을 글자 그대로 인식한다.
     - Escape sequence: \# (#의 개수는 앞 뒤의 개수에 따라 변경)
+
+3. 문자열 보간법(String Interpolation)
+    - 문자열 내에서 `\(표현식)`, 상수, 변수, 리터럴 값, 그리고 표현식의 값을 표현할 수 있다.
+    - 문자열 보간법을 사용하면 출력 형태(방법)을 직접 구현할 수도 있다.
+```swift
+let name = "짱구"
+print("나는 누구? \(name)!")
+
+struct Dog {
+    var name: String
+    var weight: Double
+}
+
+let dog = Dog(name: "초코", weight: 15.0)
+print("\(dog)")
+print(dog)
+// 위 프린트는 동일함
+
+dump("\(dog)") // 문자열 자체로 인식함
+dump(dog) // 메모리 구조에서 어떻게 되어있는지가 출력됨
+
+protocol CustomStringConvertible {
+    var description: String {
+        return ""
+    }
+}
+
+extension Dog: CustomStringConvertible {
+    var description: String {
+        return "강아지의 이름은 \(name), 몸무게는 \(weight) 입니다."
+    }
+}
+
+// \( ) => description 변수를 읽음
+// 위 내용은 Swift 4.0까지 사용하던 방식임
+
+// Swift 5에서 문자열 보간법의 동작 원리
+struct Point {
+    let x: Int
+    let y: Int
+}
+
+let p = Point(x: 5, y: 7)
+print("\(p)") // Point(x: 5, y: 7)
+
+extension String.StringInterpolation {
+    mutating func appendInterpolation(_ value: Point) {
+        appendInterpolation("X 좌표는 \(value.x), Y 좌표는 \(value.y)")
+    }
+}
+
+print("\(p)") // X 좌표는 5, Y 좌표는 7
+
+extension String.StringInterpolation {
+    mutating func appendInterpolation(_ value: Point, style: NumberFormatter.Style) {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = style
+
+        if let x = formatter.string(for: value.x), let y = formatter.string(for: value.y) {
+            appendInterpolation("X 좌표는 \(x), Y 좌표는 \(y)")
+        } else {
+            appendInterpolation("X 좌표는 \(value.x), Y 좌표는 \(value.y)")
+        }
+    }
+}
+
+print("\(p, style: .spellOut)") // X 좌표는 five, Y 좌표는 seven
+print("\(p, style: .percent)") // X 좌표는 500%, Y 좌표는 700%
+print("\(p, style: .scientific)") // X 좌표는 5E0, Y 좌표는 7E0
+
+// 자세한건 enum Style: UInt { }를 확인하자.
+```
