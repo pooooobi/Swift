@@ -225,3 +225,59 @@ extension Point: CustomStringconvertible {
     }
 }
 ```
+
+5. 서브 스트링(Substring)의 개념
+```swift
+var greeting = "Hello, world!"
+
+let index: String.index = greeting.firstIndex(of: ",") ?? greeting.endIndex // ,의 인덱스
+let beginning: String.SubSequence = greeting[..< index] // 처음부터 인덱스까지
+```
+- prefix 등의 메서드를 사용할 때
+    - Hello란 beginning 문자열은 greeting 문자열의 메모리 공간을 공유함
+    - 스위프트 내부적으로 최적화 되어 있음
+    - 수정 등이 일어나기 전까지는 메모리를 공유함
+    - 오랜기간 저장하기 위해서 새롭게 문자열로 저장할 필요가 있음
+```swift
+var word: String.SubSequence = greeting.prefix(5)
+word // String.SubSequence 타입, "Hello"
+
+greeting = "Happy"
+
+print(beginning) // Hello
+print(word) // Hello
+
+word = greeting.suffix(3)
+word // String.SubSequence 타입, "ppy"
+```
+
+6. 문자열 다루기(문자열 인덱스)
+    - 문자열 <-> 배열 (쉽게 변환)
+```swift
+var someString = "Swift"
+
+// 1) 문자열을 문자열(String) 배열로 변경
+var array: [String] = someString.map { String($0) }
+print(array)
+
+// 2) 문자열을 문자(Character) 배열로 변경
+var array2: [Character] = Array(someString)
+
+// 문자열을 문자열(String) 배열화하는 방법
+var array3: [String] = Array(arrayLiteral: someString)
+
+// 3) 문자열 배열[String]을 문자열로 변경
+var newString = array.joined()
+newString = array3.joined()
+
+// 4) 문자 배열[Character]을 문자열로 변경
+var newString2 = String(array2)
+
+// 활용 예시: 문자열을 섞는다면
+someString.randomElement()
+someString.shuffled()
+
+var newString3 = String(someString.shuffled())
+
+newString3 = someString.map { String($0) }.shuffled().joined()
+```
