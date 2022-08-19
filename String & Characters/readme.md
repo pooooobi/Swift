@@ -352,3 +352,46 @@ var firstIndex = greeting.firstIndex(of: " ")!
 var nextOfEmptyIndex = greeting.index(firstIndex, offsetBy: 1)
 greeting[nextOfEmptyIndex] // "T"
 ```
+
+8. 문자열 다루기(삽입, 교체, 추가, 삭제)
+```swift
+// 삽입
+var welcome = "Hello"
+
+welcome.insert("!", at: welcome.endIndex) // Hello!
+welcome.insert(contentsOf: " there", at: welcome.index(before: welcome.endIndex)) // Hello there!
+
+// 교체
+welcome = "Hello there!"
+
+if let range = welcome.range(of: " there!") { // 범위를 가지고 교체함
+    welcome.replaceSubrange(range, with: " Swift!")
+    print(welcome)
+}
+
+// 교체는 하되 문자열 원본은 그대로
+var newWelcome = welcome.replacingOccurrences(of: "Swift", with: "World") // Swift가 존재하면 World로 교체
+
+newWelcome = welcome.replacingOccurrences(of: "swift", with: "New World", options: [.caseInsensitive], range: nil)
+// options => 대소문자를 무시함
+
+// 추가
+welcome.append("!")
+welcome.append(" Awesome!")
+
+// 제거
+welcome = "Hello Swift!"
+
+// 인덱스를 가지고 지우기
+welcome.remove(at: welcome.index(before: welcome.endIndex)) // "!" 지우기
+
+// 인덱스 범위 파악
+var range = welcome.index(welcome.endIndex, offsetBy: -6)..< welcome.endIndex
+
+// " Swift"의 범위를 파악하고 지우기
+welcome.removeSubrange(range)
+welcome // "Hello"
+
+welcome.removeAll() // 전체삭제
+welcome.removeAll(keepingCapacity: true) // 저장공간 확보
+```
