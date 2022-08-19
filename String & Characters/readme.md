@@ -281,3 +281,74 @@ var newString3 = String(someString.shuffled())
 
 newString3 = someString.map { String($0) }.shuffled().joined()
 ```
+
+7. 문자열 다루기(문자열, 서브스크립트, 문자열 인덱스)
+```swift
+// 문자열의 대소문자 변형
+var string = "swift"
+
+string.lowercased() // 전체 소문자로 바꾼 문자열 리턴
+string.uppercased() // 전체 대문자로 바꾼 문자열 리턴
+string.capitalized // 대문자로 시작하는 글자로 리턴(원본 그대로)
+
+// 문자열 다루기의 기본(count, isEmpty)
+var emptyString = " "
+
+emptyString.count // 1
+emptyString.isEmpty // false
+
+emptyString = ""
+
+emptyString.count // 0
+emptyString.isEmpty // true
+
+if emptyString == nil {
+    print("nil")
+}
+// 위 내용에서는 String 타입이지 String? 타입이 아니므로 nil이 절대 될 수 없다.
+
+// String의 인덱스(색인, 순번) 타입
+/*
+    문자열의 인덱스는 정수가 아니다.
+    스위프트는 문자열을 글자의 의미 단위로 사용하기 때문에, 정수 인덱스를 사용할 수 없다.
+
+    *** String.Index 타입 ***
+        - 문자열.startIndex
+        - 문자열.endIndex
+        - 문자열.index(i: String.index, offsetBy: String.IndexDistance)
+
+        - 문자열.index(after: String.Index)
+        - 문자열.index(before: String.Index)
+           * 인덱스의 크기 비교 가능
+
+        - 문자열.indices => 인덱스의 모음
+           * 인덱스를 벗어나는 것에 유의해야 함
+        
+        - 문자열.firstIndex(of: Character)
+        - 문자열.lastIndex(of: Character)
+
+    *** String.Index 범위 ***
+        - 문자열.range(of: StringProtocol)
+        - 문자열.range(of: StringProtocol, options: String.CompareOptions, range: Range<String.Index>?, locale: Locale?)
+           * String.Index를 이용하여 서브스크립트를 활용할 수 있음
+    
+    *** String.Index의 정수 형태로 거리측정을 할 수 있음 ***
+        - 문자열.distance(from: String.Index, to: String.Index)
+*/
+
+let greeting = "Guten Tag!"
+
+gretting.startIndex // _rawBits: 1
+print(greeting.startIndex) // Index(_rawBits: 1)\n
+
+greeting[greeting.startIndex] // "G"
+
+// 정수형태를 변형해서 사용하는 방식
+var someIndex = greeting.index(greeting.startIndex, offsetBy: 2)
+greeting[someIndex] // "t"
+
+// 공백 문자열 다음의 글자를 알고 싶을 때
+var firstIndex = greeting.firstIndex(of: " ")!
+var nextOfEmptyIndex = greeting.index(firstIndex, offsetBy: 1)
+greeting[nextOfEmptyIndex] // "T"
+```
