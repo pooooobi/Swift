@@ -64,3 +64,41 @@ b1 = b1 &- 1 // a가 127로 돌아옴
 var c1 = Int8.max
 c1 = c1 &* 2 // 비트가 한칸씩 이동함
 ```
+
+3. 논리 연산자와 단락 평가
+    - 논리 연산자(Logical Operators)
+        - NOT, AND, OR 같은것을 의미함
+    - 단락 평가(Short-circuit Evaluation)
+        - &&에서 false가 있으면 항상 false다.
+        - ||에서 true가 있으면 항상 true다.
+        - 따라서, 논리 평가식에서 결과도출에 필요한 최소한의 논리식만 평가한다.
+        - 쉽게 설명하자면 결과도출에 필요한 과정을 최소한으로만 확인한다는 의미다.
+        - 우선순위는 && 다음에 || 다.
+```swift
+// Logical NOT Operator
+!true
+!false
+
+// Logical AND Operator
+true && true
+false && false
+true && false
+
+// Logical OR Operator
+true || true
+false || false
+true || false
+
+// 단락 평가
+var num = 0
+
+func checking() -> Bool {
+    print(#function)
+    num += 1
+    return true
+}
+
+if checking() || checking() {
+    // &&로도 실행해서 함수를 한번 실행하는지, 두번 실행하는지 확인할 것
+}
+```
