@@ -447,3 +447,74 @@ func appUpdateCheck2() {
     }
 }
 ```
+
+7. keyPath
+    - 문자열 방식을 통해 속성에 간편하게 접근하기 위한 기술임
+```swift
+class School {
+    var name: String
+    var affiliate: SmallSchool
+
+    init(name: String, affiliate: SmallSchool) {
+        self.name = name
+        self.affiliate = affiliate
+    }
+}
+
+class SmallSchool {
+    var classNumber: Person
+
+    init(classMember: Person) {
+        self.classMember = classMemeber
+    }
+}
+
+class Person {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+}
+
+let person1 = Person(name: "홍길동")
+let smallSchool1 = SmallSchool(classMember: person1)
+let school1 = School("슈퍼고", affiliate: smallSchool1)
+
+// 이름에 접근하기 위해 써야하는 코드가 비약적으로 증가함
+let gildongsName = school1.affiliate.classMember.name
+
+// Swift 5의 KeyPath
+let namePath = \School.affiliate.classMember.name
+school1[keyPath: namePath]
+```
+
+8. selector
+    - 메서드 주소를 통해 메서드를 가리키기 위한 기술임
+```swift
+// 메서드 주소를 통해 메서드를 사용하는 것
+// 기본적으로 Objective-C 기술임
+
+class Dog {
+    var num = 1.0
+
+    @objc var doubleNum: Double {
+        get {
+            return num * 2.0
+        }
+        set {
+            num = newValue / 2.0
+        }
+    }
+
+    @objc func run() {
+        print("강아지가 달린다.")
+    }
+}
+
+// 계산 속성을 가르킬 때
+let eyesSelector = #selector(getter: Dog.doubleNum)
+let nameSelector = #selector(setter: Dog.doubleNum)
+
+// 메서드를 가르킬 때
+let runSelector = #selector(Dog.run)
+```
