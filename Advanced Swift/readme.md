@@ -562,3 +562,26 @@ let pSelf2: Person.Type = type(of: person1) // person1의 영역으로 감
     - 프로토콜이름.Type
 */
 ```
+
+10. available 키워드
+```swift
+// 새로운 업데이트 사항에 따라 iOS 이전 버전에서는 코드로 인한 크래시가 발생할 수 있기 때문에
+// 어떤 버전 이상만 적용 가능 하다고 컴파일러에 힌트를 주는 것이다.
+
+@available(iOS 11.0, *)
+class ViewController: UIViewController {
+
+    override func viewDiaLoad() {
+        super.viewDiaLoad()
+    }
+}
+
+@available(iOS 11.0, *)
+func doSomething() {
+    if #available(iOS 11.0, *) {
+        // iOS 11 이상 적용시킬 코드
+    } else {
+        // iOS 11 미만 적용시킬 코드
+    }
+}
+```
