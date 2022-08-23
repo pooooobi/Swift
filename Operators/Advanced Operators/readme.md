@@ -256,3 +256,62 @@ extension Vector2D: Equatable {
 
 // 연관값이 전혀 없는 열거형의 경우 굳이 Equatable 프로토콜을 채택하지 않아도 연산자 메서드 자동 채택 및 구현됨
  ```
+
+ 5. 사용자 정의 연산자
+    - `infix` 즉, 중위 연산자의 경우 연산자의 우선 순위 그룹을 지정해야 한다.
+        - 중위 연산자가 아닌 경우에는 지정할 필요 없음
+```swift
+// 중위 연산자
+// 1) 우선순위 그룹의 선언
+precedencegroup MyPrecedence {
+    // HigherThan 또는 lowerThan 둘중에 하나는 반드시 지정해야 한다
+    higherThan: AdditionPrecedence // 지정하려는 그룹보다 순위가 낮은 그룹
+    lowerThan: MultiplicationPrecedence // 지정하려는 그룹보다 순위가 높은 그룹
+    associativity: left // 결합성(left, right, none)
+}
+
+// 2) 전역의 범위에서 정의하려는 연산자를 선언하고 우선순위 그룹을 지정한다.
+// 단항 => 전치(prefix), 후치(postfix) / 이항 => infix 키워드를 앞에 붙여야 한다.
+infix operator += : MyPrecedence
+
+// 3) 연산자의 실제 정의
+extension Vector2D {
+    static func +- (left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y - right.y)
+    }
+}
+
+let firstVector = Vector2D(x: 1.0, y: 2.0)
+let secondVector = Vector2D(x: 3.0, y: 4.0)
+let plusMinusVector = firstVector +- secondVector
+
+print(plusMinusVector) // Vector2D(x: 4.0, y: -2.0)
+
+// 중위 연산자가 아닌 경우
+// 1) 연산자의 선언
+prefix operator +++
+
+// 2) 연산자의 실제 정의
+extension Vector2D {
+    static prefix func +++ (vector: inout Vector2D) -> Vector2D {
+        vector += vector
+        return vector
+    }
+}
+
+var toBeDoubled = Vector2D(x: 1.0, y: 4.0)
+let afterDoubling = +++toBeDoubled
+// 두 변수 모두 Vector(x: 2.0, y: 8.0)
+
+// 쉬운 예시
+prefix operator ++
+
+extension Int {
+    static prefix func ++(number: inout Int) {
+        number += 1
+    }
+}
+
+var a = 0
+++a // +1
+ ```
