@@ -363,4 +363,87 @@ enum RpsGame: Int, CaseIterable {
 let number = Int.random(in: 0...100) % RpsGame.allCases.count // 나머지를 구하는 것이므로 0, 1, 2중에 나옴
 
 print(RpsGame.init(rawValue: number)!)
+
+// 혹은
+RpsGame.allCases.randomElement()
+// 를 활용해서 적용해도 된다.
+```
+
+6. Never Type, 검증 함수
+```swift
+/*
+    Never Type은 CPU에 제어권을 반납하지 않고 앱을 종료시킨다.
+
+    Nonreturning(논리터닝 함수)
+        - 제어권을 전달하지 않음
+        - 명시적으로 제어권을 전달하지 않는다는 것을 표시하기 위해 Never 타입으로 선언
+    
+    Never 타입을 리턴하는 함수
+        - 함수 내부에서 프로그램을 종료시켜야 함(fatalError())
+        - 항상 에러를 던져서 catch 문에서 처리하도록 해야함(제어권을 catch로)
+
+    Never 타입
+        - 내부가 빈 열거형으로 선언
+        - 인스턴스를 생성할 수 없음 : Uninhabited Type
+
+    사용하는 이유 ?
+        - 런타임에 발생할 수 있는 에러를 미리 발견하고, 검증 및 테스트하기 위해
+*/
+
+func crashAndBurn() -> Never {
+    fatalError("앱 오류 발생, 종료")
+}
+
+/*
+    fatalError() 함수에 대한 이해
+    
+    func fatalError(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never
+
+    1) message : 에러 발생 시 표시하려는 메세지
+    2) file : 에러 발생 파일 이름
+    3) line : 에러 발생 라인번호
+
+    출시 이전 어플리케이션은 디버그 모드로 확인하게 되는데, assert 함수(검증 함수)로 확인하고
+    출시 이후에는 precondition 함수(검증 함수)로 동작 시켜야 한다. => 앱을 일부로 종료시키는 상황
+
+    assert() : 실제 앱을 출시할 때, 앱을 종료시켜야 할 정도의 상황은 아니지만 디버그 모드에서는 확인할 수 있는 것
+
+    [디버깅 검즘 항수]
+    - assert()
+    - assertionFailure()
+    - precondition()
+    - preconditionFailure()
+    - fatalError()
+*/
+
+// assert()
+func enterWrongValue1() {
+    let someWrongInput = -1
+    assert(someWrongInput > 0, "유저가 값을 잘못 입력") // Assertion Error
+}
+
+func enterWrongValue2() {
+    let someWrongInput = -1
+
+    if someWrongInput > 0 {
+        // 정상 처리 코드
+    } else {
+        assertionFailure("유저가 값을 잘못 입력") // Fatal Error
+    }
+}
+
+// precondition() => 앱을 출시하고 나서도 일부로 크래시를 발생시켜 앱을 종료하게 끔 함
+func appUpdateCheck1() {
+    let update = false
+    precondition(update, "앱을 업데이트 하지 않음")
+}
+
+func appUpdateCheck2() {
+    let update = false
+    if update {
+        // 정상 처리 코드
+    } else {
+        preconditionFailure("앱을 업데이트 하지 않음")
+    }
+}
 ```
