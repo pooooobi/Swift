@@ -102,3 +102,76 @@ if checking() || checking() {
     // &&로도 실행해서 함수를 한번 실행하는지, 두번 실행하는지 확인할 것
 }
 ```
+
+3. 비트 연산자(Bitwise Operators)
+    - 비트 연산이란?
+        - 메모리 비트 단위로 직접적인 논리연산을 하거나, 비트 단위 이동시에 사용하는 연산
+        - 주로 하드웨어적인 처리에서 사용한다.
+        - 연산 속도가 매우 빠르고 짧은 코드로 복잡한 로직을 구현하게 할 수 있다.
+    - 비트 연산자의 종류
+        - `~` : Bitwise NOT Operator
+        - `&` : Bitwise AND Operator
+        - `|` : Bitwise OR Operator
+        - `^` : Bitwise XOR Operator
+        - `<<` : Bitwise Left Shift Operator
+        - `>>` : Bitwise Right Shift Operator
+```swift
+// Bitwise NOT Opeator
+// 비트 논리 부정 연산자라고도 하며, 기존 메모리의 비트를 반전시킨다.
+let a1: UInt8 = 0b0000_1111 // 15
+let b1 = ~a1 // 0b1111_0000 => 240
+
+// Bitwise AND Operator
+// 비트 논리 곱 연산자라고도 하며, 두개의 비트가 true(1) 이여야 1이 반환된다.
+let a2: UInt8 = 0b1111_1100 // 252
+let b2: UInt8 = 0b0011_1111 // 63
+let c2 = a2 & b2 // 0b0011_1100 => 60
+
+// Bitwise OR Operator
+// 비트 논리 합 연산자라고도 하며, 두개의 비트중 하나만 true(1) 여도 true(1)가 반환된다.
+let a3: UInt8 = 0b1011_0010 // 178
+let b3: UInt8 = 0b0101_1110 // 94
+let c3 = a3 | b3 // 0b1111_1110 // 254
+
+// Bitwise XOR Operator
+// 비트 논리 베타 연산자라고도 하며, 두개의 비트를 비교하여 서로 다르면 true(1)가 반환된다.
+let a4: UInt8 = 0b0001_0100 // 20
+let b4: UInt8 = 0b0000_0101 // 5
+let c4 = a4 ^ b4 // 0b0001_0001 // 17
+
+// Unsigned(부호가 없는) 비트 이동 연산자
+/* 
+    - 기존 비트를 요청된 값만큼 왼쪽 혹은 오른쪽으로 이동
+    - 정수(Integer)의 수용 범위를 넘어서는 비트는 어떤 것이든 버림
+    - 비트를 왼쪽이나 오른쪽으로 이동하면서 남는 공간에는 0을 삽입
+*/
+
+// Bitwise Left Shift Operator
+let leftShiftBits: UInt8 = 4 // 0b0000_0100 => 4
+leftShiftBits << 1 // 0b0000_1000 => 8, 곱하기 2가 됨
+leftShiftBits << 2 // 0b0001_0000 => 16, 2^2 => 곱하기 4가 됨
+
+// Bitwise Right Shift Operator
+let rightShiftBits: UInt8 = 32 // 0b0010_0000 => 32
+rightShiftBits >> 1 // 0b0001_0000 => 16, 나누기 2가 됨
+rightShiftBits >> 2 // 0b0000_1000 => 8, 나누기 4가 됨(2^2)
+
+// Signed(부호가 있는) 비트 이동 연산자
+/* 
+    - 기존 비트를 요청된 값만큼 왼쪽 혹은 오른쪽으로 이동
+    - 정수(Integer)의 수용 범위를 넘어서는 비트는 어떤 것이든 버림
+    - 비트를 왼쪽으로 이동하면서 남는 공간에는 0을 삽입
+    - 비트를 오른쪽으로 이동하면서 남는 공간에는 부호가 없을 때 0, 부호가 있을 때 1을 삽입함(오른쪽 이동시 주의할 것)
+*/
+
+// Bitwise Left Shift Operator
+let shiftBits: Int8 = 4 // 0b0000_0100 => 4
+shiftBits << 1 // 0b0000_1000 => 8, 곱하기 2가 됨
+shiftBits << 2 // 0b0001_0000 => 16, 곱하기 4가 됨(2^2)
+shiftBits << 5 // 0b1000_0000 => -128, 2^5승이고, 범위초과로 인해 오버플로우
+
+// Bitwise Right Shift Operator
+let shiftSignedBits: Int8 = -2 // 0b1111_1110 => -2
+shiftSignedBits >> 1 // 0b1111_1111 => -1, 나누기 2의 몫 및 부호비트 유지
+shiftSignedBits >> 2 // 0b1111_1111 => -1, 나누기 4의 몫 및 부호비트 유지
+```
