@@ -99,3 +99,122 @@ person1 == person2 // false
 person1 != person2 // true
 ```
 
+3. Comparable
+```swift
+/*
+    [Comparable 요구사항]
+    - static func < (lhs: Self, rhs: Self) -> Bool 메서드 구현
+    - 일반적으로 < 만 구현하면 >, <=, >= 연산자도 자동 구현
+    - Comparable 프로토콜은 Equatable 프로토콜을 상속하고 있음(필요시 == 구현해야 함)
+    - 스위프트에서 제공하는 기본 숫자 타입 및 String은 모두 다 채택을 하고 있음(Bool은 채택하지 않음)
+*/
+
+let num1: Int = 123
+let num2: Int = 456
+
+num1 < num2 // true
+num1 > num2 // false
+
+let str1: String = "Hello"
+let str2: String = "안녕"
+
+str1 < str2 // true
+str1 > str2 // false
+
+/*
+    [Int의 내부 구현]
+    @frozen public struct Int: FixedWidthInteger, SignedInteger {
+        ...
+        public static func < (lhs: Int, rhs: Int) -> Bool
+    }
+
+    원칙) 구조체, 클래스의 모든 저장속성(열거형은 원시값이 있는 경우) Comparable을 채택한 경우라도 <(Less than) 연산자를 직접 구현해야 한다
+
+    예외) 열거형의 경우 원시값이 없다면 Comparable을 채택만 하면 <(Less than) 연산자는 자동 제공
+         원시값을 도입하는 순간 개발자가 직접 대응되는 값을 제공하므로 정렬 방식도 구현해야 한다는 논리
+*/
+
+// 열거형의 경우
+enum Direction: Int {
+    case east
+    case west
+    case south
+    case north
+}
+
+extension Direction: Comparable {
+    static func < (lhs: Direction, rhs: Direction) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
+}
+
+Direction.north < Direction.east // false
+Direction.north > Direction.east // true
+
+enum SuperComputer: Comparable {
+    case cpu(core: Int, ghz: Double)
+    case ram(Int)
+    case hardDisk(gb: Int)
+}
+
+SuperComputer.cpu(core: 8, ghz: 3.5) < SuperComputer.cpu(core: 16, ghz: 3.5) //  true
+SuperComputer.cpu(core: 8, ghz: 3.5) > SuperComputer.cpu(core: 8, ghz: 3.5) //  false
+
+enum MyDirection: Comparable {
+    case east
+    case west
+    case south
+    case north
+}
+
+MyDirection.north < MyDirection.east // false
+MyDirection.north > MyDirection.east // true
+
+// 구조체의 경우
+struct Dog {
+    var name: String
+    var age: Int
+}
+
+extension Dog: Comparable {
+    // 이름 순인지 나이 순인지 구현해야 함
+    static func < (lhs: Dog, rhs: Dog) -> Bool {
+        return lhs.age < rhs.age
+    }
+}
+
+let dog1: Dog = Dog(name: "초코", age: 10)
+let dog2: Dog = Dog(name: "보리", age: 2)
+
+dog1 < dog2 // false
+dog1 > dog2 // true
+
+// 클래스의 경우
+class Person {
+    var name: String
+    var age: Int
+
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+}
+
+extension Person: Comparable {
+    // 클래스의 경우 ==도 구현해야 함
+    static func == (lhs: Person, rhs: Person) -> Bool {
+        return lhs.name == rhs.name && lhs.age == rhs.age
+    }
+
+    // 나이순 정렬
+    static func < (lhs: Person, rhs: Person) -> Bool {
+        return lhs.age < rhs.age
+    }
+}
+
+let person1: Person = Person(name: "홍길동", age: 20)
+let person2: Person = Person(name: "임꺽정", age: 22)
+
+person1 < person2 // true
+person1 > person2 // false
+```
