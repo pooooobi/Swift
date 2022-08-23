@@ -518,3 +518,47 @@ let nameSelector = #selector(setter: Dog.doubleNum)
 // 메서드를 가르킬 때
 let runSelector = #selector(Dog.run)
 ```
+
+9. 메타 타입
+```swift
+class Dog {
+    static let species = "Dog"
+    var name: String = ""
+    var weight: Double = 0.0
+}
+
+let dog1: Dog = Dog()
+
+dog1.name = "초코"
+dog1.weight = 10.0
+
+let dog2: Dog = Dog()
+dog2.name = "보리"
+dog2.weight = 15.0
+
+// 메타 타입은 타입(인스턴스, 메모리)의 타입임
+let dogSelf: Dog.Type = type(of: dog1) // dog1의 인스턴스를 집어 넣음
+
+Dog.species // => Dog.self.species
+
+class Person {
+    static let species = "Human"
+    var name: String = ""
+}
+
+let person1: Person = Person()
+person1.name = "홍길동"
+
+let pSelf1: Person.Type = Person.self // species가 있는 영역으로 감
+let pSelf2: Person.Type = type(of: person1) // person1의 영역으로 감
+
+/*
+    [Custom type]
+    - 클래스이름.Type
+    - 구조체이름.Type
+    - 열거형이름.Type
+
+    [Protocol type]
+    - 프로토콜이름.Type
+*/
+```
