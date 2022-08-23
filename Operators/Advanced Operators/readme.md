@@ -175,3 +175,84 @@ let shiftSignedBits: Int8 = -2 // 0b1111_1110 => -2
 shiftSignedBits >> 1 // 0b1111_1111 => -1, 나누기 2의 몫 및 부호비트 유지
 shiftSignedBits >> 2 // 0b1111_1111 => -1, 나누기 4의 몫 및 부호비트 유지
 ```
+
+ 4. 연산자 메서드
+ ```swift
+"Hello" + ", Swift" // Hello, Swift!
+
+/* 
+    위 문자열 더하기는 String 구조체 내부에 타입 메서드로 정의되어 있다.
+    
+    [문자열 더하기]
+    static func + (lhs: String, rhs: String) -> String
+
+    [문자열 복합할당 연산자]
+    static func +=(lhs: inout String, rhs: String)
+*/
+
+// 1) 연산자 메서드의 구현
+
+// 스위프트 공식문서 예제
+struct Vector2D {
+    var x = 0.0
+    var y = 0.0
+}
+// 1-1) 산술 더하기 연산자의 구현(infix 연산자)
+// infix Operator + : AdditionPrecedence
+extension Vector2D {
+    static func + (lhs: Vector2D, rhs: Vector2D) -> Vector2D { // static infix func => infix 생략 가능
+        return Vector2D(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
+}
+
+let vector = Vector2D(x: 3.0, y: 1.0)
+let anotherVector = Vector2D(x: 2.0, y: 4.0)
+let combinedVector = vector + anotherVector
+
+// 1-2) 단항 prefix 연산자의 구현
+extension Vector2D {
+    static prefix func - (vector: Vector2D) -> Vector2D {
+        return Vector2D(x: -vector.x, y: -vector.y)
+    }
+}
+
+let positive = Vector2D(x: 3.0, y: 4.0)
+let negative = -positive
+
+// 1-3) 복합할당 연산자의 구현
+extension Vector2D {
+    static func += (left: inout Vector2D, right: Vector2D) {
+        left = left + right
+    }
+}
+
+// 2) 비교 연산자(==, !=)의 직접적인 구현
+/*
+    - String 구조체 내부에 타입 메서드로 정의되어 있음
+
+    [Equatable 동일성 비교에 관한 프로토콜]
+    static func == (lhs: String, rhs: String) -> Bool
+    static func != (lhs: String, rhs: String) -> Bool
+
+    [Comparable 크기, 순서비교에 관한 프로토콜]
+    static func < (lhs: String, rhs: String) -> Bool
+    static func > (lhs: String, rhs: String) -> Bool
+    static func <= (lhs: String, rhs: String) -> Bool
+    static func >= (lhs: String, rhs: String) -> Bool
+
+    Comparable 프로토콜을 채택한 타입에서는 모두 위와 같은 메서드가 구현되어 있음
+    Comparable 프로토콜은 Equatable 프로토콜을 상속, 동일성 비교가 가능해야 크기 비교도 가능하다.
+
+    Equatable 프로토콜을 채택하기만 하면 컴파일러가 연산자 메서드 구현 내용을 자동으로 추가해준다.
+*/
+
+extension Vector2D: Equatable {
+    // 내부 자동구현 되어있음.
+    // 직접 구현해도 됨.
+    static func == (lhs: Vector2D, rhs: Vector2D) {
+        return (lhs.x == rhs.x) && (lhs.y == rhs.y)
+    }
+}
+
+// 연관값이 전혀 없는 열거형의 경우 굳이 Equatable 프로토콜을 채택하지 않아도 연산자 메서드 자동 채택 및 구현됨
+ ```
