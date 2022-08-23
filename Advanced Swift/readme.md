@@ -218,3 +218,97 @@ let person2: Person = Person(name: "임꺽정", age: 22)
 person1 < person2 // true
 person1 > person2 // false
 ```
+
+4. Hashable
+```swift
+/*
+    [Hashable 요구사항]
+    func hash(into hasher: inout Hasher) 메서드의 구현
+    이전 버전에서는 var hashValue: Int { get } 와 같이 hashValue 계산 속성으로 구현되어 있었으나 현재는 위의 방식으로 구현해야 한다.
+    스위프트에서 제공하는 기본 숫자 타입은 모두 다 채택을 하고 있음
+*/
+
+let num1: Int = 123
+let num2: Int = 456
+
+// Int가 Hashable하기 때문에 Set의 원소가 될 수 있음
+let set: Set [num1, num2]
+
+let str1: String = "Hello"
+let str2: String = "안녕"
+
+// String이 Hashable하기 때문에 Set의 원소가 될 수 있음
+let set2: Set = [str1, str2]
+
+/*
+    [Int의 내부 구현]
+    extension Int: Hashable {
+        @inlinable public func hash(into hasher: inout Hasher)
+
+        public var hashValue: Int { get }
+    }
+
+    원칙) 구조체, 열거형의 경우 Hashable 프로토콜을 채택 시 모든 저장속성(열거형은 모든 연관 값)이 Hashable 프로토콜을 채택한 타입이라면, hast(into:)메서드 자동 구현
+    예외) 클래스는 인스턴스의 유일성을 갖게 하기 위해서는 hash(into:) 메서드를 직접 구현해야하며, 클래스는 원칙적으로 Hashable 지원이 불가하다
+         열거형의 경우 연관값이 없다면 기본적으로 Equatable/Hashable 하기 때문에 Hashable 프로토콜을 채택하지 않아도 됨
+*/
+
+// 열거형의 경우
+enum SuperComputer: Hashable {
+    case cpu(core: Int, ghz: Double)
+    case ram(Int)
+    case hardDisk(gb: Int)
+}
+
+let superSet: Set = [SuperComputer.cpu(core: 8, ghz: 3.5), SuperComputer.cpu(core: 16, ghz: 3.5)]
+
+enum Direction {
+    case east
+    case west
+    case south
+    case north
+}
+
+let directionSet: Set = [Direction.north, Direction.east]
+
+// 구조체의 경우
+struct Dog {
+    var name: String
+    var age: Int
+}
+
+extension Dog: Hashable {}
+
+let dog1: Dog = Dog(name: "초코", age: 10)
+let dog2: Dog = Dog(name: "보리", age: 2)
+
+let dogSet: Set = [dog1, dog2]
+
+// 클래스의 경우
+class Person {
+    var name: String
+    var age: Int
+
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+}
+
+// Set에 넣고 싶어 Hashable 프로토콜 채택 => 클래스에서는 오류 발생
+extension Person: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(age)
+    }
+
+    static func == (lhs: Person, rhs: Person) -> Bool {
+        return lhs.name == rhs.name && lhs.age == rhs.age
+    }
+}
+
+let person1: Person = Person(name: "홍길동", age: 20)
+let person2: Person = Person(name: "임꺽정", age: 20)
+
+let personSet: Set = [person1, person2]
+```
