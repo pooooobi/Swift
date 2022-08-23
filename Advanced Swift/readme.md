@@ -312,3 +312,55 @@ let person2: Person = Person(name: "임꺽정", age: 20)
 
 let personSet: Set = [person1, person2]
 ```
+
+5. CaseIterable
+```swift
+/*
+    CaseIterable 프로토콜은 열거형(Enum) 타입에서만 사용할 수 있다.
+    열거형에서 CaseIterable 프로토콜을 채택하면 타입 계산 속성이 자동으로 구현된다.
+        - static var allCases: Self.AllCases { get }
+    연관값이 없는 경우에만 채택 가능하다.
+*/
+
+enum Color: CaseIterable {
+    case red, green, blue
+}
+
+Color.allCases // [Color.red, Color.green, Color.blue]
+
+// 배열의 장점을 사용해 여러 편의적 기능 활용 가능
+for color in Color.allCases {
+    print("\(color)")
+}
+
+// 필요한 곳에서 간단하게
+struct SomeView {
+    let colors = Color.allCases
+}
+
+enum CompassDirection: CaseIterable {
+    case north, south, east, west
+}
+
+// 케이스의 개수를 세기 편해짐
+print("방향은 \(CompassDirection.allCases.count) 가지")
+
+// 배열 => 고차함수 이용 가능
+let caseList = CompassDirection.allCases
+                                .map{ "\($0)" }
+                                .joined(separator: ", ")
+
+// 랜덤 케이스를 뽑아낼 수 있음
+var randomValue = CompassDirection.allCases.randomElement()
+
+// RPSGame(Application #3 참조)
+enum RpsGame: Int, CaseIterable {
+    case rock = 0
+    case paper = 1
+    case scissors = 2
+}
+
+let number = Int.random(in: 0...100) % RpsGame.allCases.count // 나머지를 구하는 것이므로 0, 1, 2중에 나옴
+
+print(RpsGame.init(rawValue: number)!)
+```
