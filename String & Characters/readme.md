@@ -395,3 +395,53 @@ welcome // "Hello"
 welcome.removeAll() // 전체삭제
 welcome.removeAll(keepingCapacity: true) // 저장공간 확보
 ```
+
+9. 문자열 비교하기
+```swift
+// 비교 연산자(대소문자 구별)
+"swift" == "Swift" // false
+"swift" != "Swift" // true
+
+// 크기 비교(유니코드 비교)
+"swift" < "Swift" // false => 첫 글자의 유니코드 비교
+"swift" <= "Swift" // false => 소문자가 더 위에 위치
+
+// 대소문자 무시 후 비교
+"swift".lowercased() == "Swift".lowercased() // true
+
+// 혹은 caseInsensitiveCompare
+var a = "swift"
+var b = "Swift"
+
+a.caseInsenitiveCompare(b) == ComparisonResult.orderedSame
+/*
+    ComparisonResult를 열거형 타입으로 정의
+    1) .orderedSame // 동일
+    2) .orderedAscending // 오름차순
+    3) .orderedDescending // 내림차순
+
+    단순 같은지, 틀린지 뿐 아니라 결과가 오름차순, 내림차순인지 알 수 있어서 결과값이 활용성이 높고 보다 구체적인 정보를 제공할 수 있다
+*/
+
+// 문자열 비교 메서드
+var name = "Hello, Swift"
+
+name.compare("hello", options: [.caseInsensitive]) == .orderedDescending
+
+/*
+    [String.CompareOptions 구조체]
+    .caseInsensitive => 대소문자 무시
+
+    .diacriticInsensitive => 발음 구별기호 무시
+    .widthInsensitive => 글자 넓이 무시
+
+    .forcedOrdering => 강제 오름차순
+    .literal => 유니코드 자체로 비교
+    .numeric => 숫자 전체를 인식하여 비교
+
+    .anchored => 앞부분 고정시키고 비교 (접두어)
+    .backwards => 문자 뒷자리부터
+
+    .regularExperssion => 정규식 검증
+*/
+```
