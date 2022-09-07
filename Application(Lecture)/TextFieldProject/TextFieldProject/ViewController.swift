@@ -18,6 +18,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         textField.borderStyle = .roundedRect
         textField.clearButtonMode = .always
         textField.returnKeyType = .next
+        
+        textField.becomeFirstResponder() // 처음 화면에 들어갔을 때 바로 접근하게끔 설정 => becomeFirstResponder()
+    }
+    
+    // 화면에 터치가 들어오면 동작하는 메서드
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     // 텍스트 필드의 입력을 시작할 때 호출함
@@ -38,9 +45,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
     // 텍스트 필드의 글자 내용이 입력되거나 지워질 때 호출이 됨(허락 여부도 리턴함)
     // 특수문자를 사용하지 않게 한다거나.. 특정 조건을 추가하여 사용하면 됨
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        print(#function)
-        print(string)
-        return true
+//        print(#function)
+//        print(string)
+//        return true
+        if Int(string) != nil {
+            return false
+        } else {
+            // 텍스트 필드에서 10 글자 이상 사용되는걸 막는 코드
+            guard let text = textField.text else { return true }
+            let newLength = text.count + string.count - range.length
+            return newLength <= 10
+        }
     }
     
     // 텍스트 필드의 엔터키가 눌리면 다음 동작을 허락할것인지
@@ -68,7 +83,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func doneButtonTapped(_ sender: UIButton) {
-        
+        textField.resignFirstResponder()
     }
     
 }
