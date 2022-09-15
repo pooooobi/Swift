@@ -127,7 +127,7 @@ class ViewController: UIViewController {
         return button
     }()
     
-    lazy var stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let st = UIStackView(arrangedSubviews: [emailTextFieldView, passwordTextFieldView, loginButton])
         
         st.spacing = 18 // 내부의 간격
@@ -144,7 +144,7 @@ class ViewController: UIViewController {
         button.backgroundColor = .clear
         button.setTitle("비밀번호 재설정", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        // button.addTarget(self, action: #selector(resetButtonTapped  ), for: .touchUpInside)
+        // button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -160,6 +160,7 @@ class ViewController: UIViewController {
         view.backgroundColor = UIColor.black
         
         view.addSubview(stackView)
+        view.addSubview(passwordResetButton)
         
         // 깔끔한 방법
         emailInfoLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -200,10 +201,10 @@ class ViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
             stackView.heightAnchor.constraint(equalToConstant: textViewHeight * 3 + 36),
             
-            // passwordResetButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
-            // passwordResetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            // passwordResetButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            // passwordResetButton.heightAnchor.constraint(equalToConstant: textViewHeight)
+            passwordResetButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
+            passwordResetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            passwordResetButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            passwordResetButton.heightAnchor.constraint(equalToConstant: textViewHeight)
         ])
         
         // passwordInfoLabelCenterYConstraint.isActive = true
