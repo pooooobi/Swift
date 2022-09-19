@@ -1,6 +1,6 @@
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     // MARK: - 이메일 입력하는 텍스트 뷰
     private lazy var emailTextFieldView: UIView = {
