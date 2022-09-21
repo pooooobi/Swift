@@ -12,7 +12,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="NextVC" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="toThirdVC" id="BYZ-38-t0r" customClass="ViewController" customModule="NextVC" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -78,10 +78,13 @@
                             <constraint firstItem="6s5-uC-C11" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="M2V-pK-Fqt"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <segue destination="3mR-GU-eW3" kind="presentation" identifier="toThirdVC" id="yLh-b9-XkY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="20" y="94"/>
+            <point key="canvasLocation" x="-262" y="254"/>
         </scene>
         <!--Second View Controller-->
         <scene sceneID="bUO-Mp-l7y">
@@ -128,24 +131,24 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hN7-Ai-PIV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1132" y="-179"/>
+            <point key="canvasLocation" x="641" y="-119"/>
         </scene>
         <!--Third View Controller-->
         <scene sceneID="0aa-7c-2Ny">
             <objects>
                 <viewController id="3mR-GU-eW3" customClass="ThirdViewController" customModule="NextVC" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="upL-35-HgU">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="838"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ThirdViewController" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b6a-5C-WVJ">
-                                <rect key="frame" x="112.5" y="434.5" width="189" height="27"/>
+                                <rect key="frame" x="112.5" y="405.5" width="189" height="27"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYt-e1-9g2">
-                                <rect key="frame" x="172" y="782" width="70" height="40"/>
+                                <rect key="frame" x="172" y="758" width="70" height="40"/>
                                 <color key="backgroundColor" systemColor="linkColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="IwN-zl-cxh"/>
@@ -176,7 +179,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tBW-n0-OGP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1132" y="646"/>
+            <point key="canvasLocation" x="1267" y="606"/>
         </scene>
         <!--Fourth View Controller-->
         <scene sceneID="LLD-dR-ONg">
@@ -224,7 +227,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i5K-O5-Fo9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1132" y="1467"/>
+            <point key="canvasLocation" x="470" y="1027"/>
         </scene>
     </scenes>
     <resources>
