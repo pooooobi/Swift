@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DA620EE28DB1B4500621AF4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA620ED28DB1B4500621AF4 /* FirstViewController.swift */; };
 		47EDC7E32773817E002C95CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EDC7E22773817E002C95CA /* AppDelegate.swift */; };
 		47EDC7E52773817E002C95CA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EDC7E42773817E002C95CA /* SceneDelegate.swift */; };
 		47EDC7E72773817E002C95CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EDC7E62773817E002C95CA /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0DA620ED28DB1B4500621AF4 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		47EDC7DF2773817E002C95CA /* NextVC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NextVC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47EDC7E22773817E002C95CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47EDC7E42773817E002C95CA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				47EDC7E22773817E002C95CA /* AppDelegate.swift */,
 				47EDC7E42773817E002C95CA /* SceneDelegate.swift */,
 				47EDC7E62773817E002C95CA /* ViewController.swift */,
+				0DA620ED28DB1B4500621AF4 /* FirstViewController.swift */,
 				47EDC7F627738965002C95CA /* SecondViewController.swift */,
 				47EDC7FA2773A580002C95CA /* ThirdViewController.swift */,
 				47EDC7FC277430E3002C95CA /* FourthViewController.swift */,
@@ -152,6 +155,7 @@
 				47EDC7E32773817E002C95CA /* AppDelegate.swift in Sources */,
 				47EDC7FB2773A580002C95CA /* ThirdViewController.swift in Sources */,
 				47EDC7E52773817E002C95CA /* SceneDelegate.swift in Sources */,
+				0DA620EE28DB1B4500621AF4 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
